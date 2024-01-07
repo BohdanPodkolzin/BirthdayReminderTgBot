@@ -1,0 +1,14 @@
+1. create telegramBot
+2. Add buttons to navigate person
+3. Realized list of scedules
+4. Gave it into some baze
+5. Add datatime lib to compare users data with nowData
+6. Give a reminders to bot.
+
+
+
+
+navigation: 
+About Bot;
+Edit List -> Delete date, Add date;
+Show List;
