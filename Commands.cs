@@ -18,10 +18,17 @@ namespace tg
         [ReplyMenuHandler("/start")]
         public static async Task StartBot(ITelegramBotClient botClient, Update update)
         {   
-            var startMessage = $"Get ready, to do list of bithdays enter /menu";
-            var printStartedMessage = await PRTelegramBot.Helpers.Message.Send(botClient, update, startMessage);
-            // var firstMessage = $"Hello, {update.Message.From.FirstName}!\n This bot was created by @szymptom like first project. This creation is aimed at helping with the schedule of the day of births";
-            // var printFirstMessage = await PRTelegramBot.Helpers.Message.Send(botClient, update, firstMessage);
+            if (update.Message?.From != null)
+            {
+                User user = update.Message.From;
+                string userNickName = user?.Username ?? "";
+
+                if (userNickName != null)
+                {
+                    string startMessage = $"🖐️ Hey, @{userNickName}!\nTo make your first schedule of bithdays enter /menu";
+                    Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, startMessage);
+                }
+            }
 
         }
 
@@ -29,7 +36,7 @@ namespace tg
         public static async Task About(ITelegramBotClient botClient, Update update)
         {
             var message = $"This bot was created by @szymptom like first project.\nThis creation is aimed at helping with the schedule of the day of births";
-            var printMessage = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+            var _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
         }
 
 
@@ -56,19 +63,23 @@ namespace tg
         [ReplyMenuHandler("Edit Countdown")]
         public static async Task EditCountdown(ITelegramBotClient botClient, Update update)
         {
-            var message = $"Choose what you want to do";
+            var addButton = new InlineCallback("Add Countdown", EditCountdownTHeader.Add);
+            var delButton = new InlineCallback("Delete Countdowm", EditCountdownTHeader.Del);
+            var allDelButton = new InlineCallback("Delete All Schedule", EditCountdownTHeader.AllDel);
 
             List<IInlineContent> menu = new List<IInlineContent>();
+            menu.Add(addButton);
+            menu.Add(delButton);
+            menu.Add(allDelButton);
 
-            var url = new InlineURL("Add", "https://google.com");
-            menu.Add(url);
+            InlineKeyboardMarkup editorMenu = MenuGenerator.InlineKeyboard(2, menu);
 
+            OptionMessage option = new OptionMessage();
+            option.MenuInlineKeyboardMarkup = editorMenu;
 
-            InlineKeyboardMarkup menuItems = MenuGenerator.InlineKeyboard(1, menu);
-            var optionss = new OptionMessage();
-            optionss.MenuInlineKeyboardMarkup = menuItems;
-
-            var senddMessage = await PRTelegramBot.Helpers.Message.Send(botClient, update, message, optionss);
+            string message = "What do you want to do?";
+            Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message, option);
         }
     }
 }
+
