@@ -9,6 +9,6 @@
 
 
 navigation: 
-About Bot;
-Edit List -> Delete date, Add date;
-Show List;
+		-> About Bot; -> "info about bot";
+Button	-> Edit List -> inline commands Delete date, Add date;
+		-> Show List; -> "Showing list of dates";
