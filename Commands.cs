@@ -80,6 +80,17 @@ namespace tg
             string message = "What do you want to do?";
             Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message, option);
         }
+
+        [InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.Add)]
+        public static async Task Inline(ITelegramBotClient botClient, Update update)
+        {
+            var command = InlineCallback.GetCommandByCallbackOrNull(update.CallbackQuery?.Data ?? "");
+            if (command != null)
+            {
+                string message = $"Callback command Add";
+                Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+            }
+        }
     }
 }
 
