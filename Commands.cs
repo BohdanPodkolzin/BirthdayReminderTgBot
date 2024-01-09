@@ -60,6 +60,7 @@ namespace tg
 
         }
 
+        // Inline menu for EditCountdownx`
         [ReplyMenuHandler("Edit Countdown")]
         public static async Task EditCountdown(ITelegramBotClient botClient, Update update)
         {
@@ -82,7 +83,7 @@ namespace tg
         }
 
         [InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.Add)]
-        public static async Task Inline(ITelegramBotClient botClient, Update update)
+        public static async Task GetInlineAdd(ITelegramBotClient botClient, Update update)
         {
             var command = InlineCallback.GetCommandByCallbackOrNull(update.CallbackQuery?.Data ?? "");
             if (command != null)
@@ -91,6 +92,8 @@ namespace tg
                 Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
             }
         }
+
+
     }
 }
 
