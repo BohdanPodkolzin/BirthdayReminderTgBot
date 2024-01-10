@@ -15,9 +15,10 @@ namespace tg
     public class Calendar
     {
 
-        public static DateTimeFormatInfo dtfi = CultureInfo.GetCultureInfo("ru-RU", false).DateTimeFormat;
+        public static DateTimeFormatInfo dtfi = CultureInfo.GetCultureInfo("en-GB", false).DateTimeFormat;
 
-        [ReplyMenuHandler("Add Countdown")]
+
+        [InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.Add)]
         public static async Task PickCalendar(ITelegramBotClient botClient, Update update)
         {
             var calendarMarkup = Markup.Calendar(DateTime.Now, dtfi); // dtfi is DateTimeFormatInfo
@@ -33,7 +34,7 @@ namespace tg
         {
             try
             {
-                var command = InlineCallback<CalendarTCommand>.GetCommandByCallbackOrNull(update.CallbackQuery.Data);
+                var command = InlineCallback<CalendarTCommand>.GetCommandByCallbackOrNull(update.CallbackQuery?.Data);
                 if (command != null)
                 {
                     var monthYearMarkup = Markup.PickMonthYear(command.Data.Date, dtfi, command.Data.LastCommand);
@@ -45,7 +46,7 @@ namespace tg
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine(ex);
             }
             
         }
@@ -55,7 +56,7 @@ namespace tg
         {
             try
             {
-                var command = InlineCallback<CalendarTCommand>.GetCommandByCallbackOrNull(update.CallbackQuery.Data);
+                var command = InlineCallback<CalendarTCommand>.GetCommandByCallbackOrNull(update.CallbackQuery?.Data);
                 if (command != null)
                 {
                     var monthPickerMarkup = Markup.PickMonth(command.Data.Date, dtfi, command.Data.LastCommand);
@@ -67,7 +68,7 @@ namespace tg
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine(ex);
             }
         }
 
@@ -76,7 +77,7 @@ namespace tg
         {
             try
             {
-                var command = InlineCallback<CalendarTCommand>.GetCommandByCallbackOrNull(update.CallbackQuery.Data);
+                var command = InlineCallback<CalendarTCommand>.GetCommandByCallbackOrNull(update.CallbackQuery?.Data);
                 if (command != null)
                 {
                     var yearPickerMarkup = Markup.PickYear(command.Data.Date, dtfi, command.Data.LastCommand);
@@ -87,7 +88,7 @@ namespace tg
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine(ex);
             }
         }
 
@@ -97,7 +98,7 @@ namespace tg
         {
             try
             {
-                var command = InlineCallback<CalendarTCommand>.GetCommandByCallbackOrNull(update.CallbackQuery.Data);
+                var command = InlineCallback<CalendarTCommand>.GetCommandByCallbackOrNull(update.CallbackQuery?.Data);
                 if (command != null)
                 {
                     var calendarMarkup = Markup.Calendar(command.Data.Date, dtfi);
@@ -108,30 +109,36 @@ namespace tg
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine(ex);
             }
 
         }
+
 
         [InlineCallbackHandler<THeader>(THeader.PickDate)]
         public static async Task PickDate(ITelegramBotClient botClient, Update update)
         {
             try
             {
-                var command = InlineCallback<CalendarTCommand>.GetCommandByCallbackOrNull(update.CallbackQuery.Data);
+                var command = InlineCallback<CalendarTCommand>.GetCommandByCallbackOrNull(update.CallbackQuery?.Data);
                 if (command != null)
                 {
                     var type = command.Data.GetLastCommandEnum<EditCountdownTHeader>();
                     var data = command.Data.Date;
-                    Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, data.ToString());
 
+                    Message showDate = await PRTelegramBot.Helpers.Message.Send(botClient, update, data.ToString("dd.MM.yyyy"));
+                    
 
+                    // Зміна тут: очікуйте результат showDate
                 }
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine(ex);
             }
+
+            // Якщо виникає виключення чи з іншої причини, повертайте null або значення за замовчуванням для Message.
+
         }
 
 

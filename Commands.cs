@@ -60,7 +60,7 @@ namespace tg
 
         }
 
-        // Inline menu for EditCountdownx`
+        // Inline menu for EditCountdown
         [ReplyMenuHandler("Edit Countdown")]
         public static async Task EditCountdown(ITelegramBotClient botClient, Update update)
         {
