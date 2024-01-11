@@ -17,8 +17,19 @@ namespace tg
         [ReplyMenuHandler("cache")]
         public static async Task GetCacheData(ITelegramBotClient botClient, Update update)
         {
-            string message = $"Cache: {update.GetChatId()}";
-            update.GetCacheData<UserCache>().Id = update.GetChatId();
+            var cache = update.GetCacheData<UserCache>();
+
+            string message;
+
+            if (cache.CachedDate != DateTime.MinValue)
+            {
+                message = $"Cached Date: {cache.CachedDate.ToString("dd.MM.yyyy")}";
+            }
+            else
+            {
+                message = $"Cache: No cached date";
+            }
+
             Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
 
         }
@@ -28,11 +39,11 @@ namespace tg
         public static async Task CheckCache(ITelegramBotClient botClient, Update update)
         {
             UserCache cache = update.GetCacheData<UserCache>();
-            string message = "";
-            if (cache.Id != 0)
-            {
-                message = $"Data in userCache: {cache.Id}";
 
+            string message;
+            if (cache.CachedDate != DateTime.MinValue)
+            {
+                message = $"Data in userCache: {cache.CachedDate}";
             }
             else
             {

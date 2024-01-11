@@ -42,13 +42,13 @@ namespace tg
                     option.MenuInlineKeyboardMarkup = monthYearMarkup;
                     Message _ = await PRTelegramBot.Helpers.Message.EditInline(botClient, update.CallbackQuery.Message.Chat.Id, update.CallbackQuery.Message.MessageId, option);
                 }
-    
+
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
             }
-            
+
         }
 
         [InlineCallbackHandler<THeader>(THeader.PickMonth)]
@@ -126,21 +126,15 @@ namespace tg
                     var type = command.Data.GetLastCommandEnum<EditCountdownTHeader>();
                     var data = command.Data.Date;
 
-           
-
+                    update.GetCacheData<UserCache>().CachedDate = data;
                     Message showDate = await PRTelegramBot.Helpers.Message.Send(botClient, update, data.ToString("dd.MM.yyyy"));
-                    
-                   
 
-                    // Зміна тут: очікуйте результат showDate
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
             }
-
-            // Якщо виникає виключення чи з іншої причини, повертайте null або значення за замовчуванням для Message.
 
         }
 
