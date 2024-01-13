@@ -82,15 +82,15 @@ namespace tg
             Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message, option);
         }
 
-        [InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.Add)]
-        public static async Task GetInlineAdd(ITelegramBotClient botClient, Update update)
+
+
+        [InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.AllDel)]
+        public static async Task DelAllDates(ITelegramBotClient botClient, Update update)
         {
-            var command = InlineCallback.GetCommandByCallbackOrNull(update.CallbackQuery?.Data ?? "");
-            if (command != null)
-            {
-                string message = $"Callback command Add";
-                Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
-            }
+
+            string message = $"All list is clear";
+            Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+            
         }
 
 
