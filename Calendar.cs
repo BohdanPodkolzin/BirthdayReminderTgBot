@@ -88,7 +88,7 @@ namespace tg
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                Console.WriteLine(ex); 
             }
         }
 
@@ -126,7 +126,9 @@ namespace tg
                     var type = command.Data.GetLastCommandEnum<EditCountdownTHeader>();
                     var data = command.Data.Date;
 
-                    update.GetCacheData<UserCache>().CachedDate = data;
+                    var userCache = update.GetCacheData<UserCache>();
+                    userCache.CachedDates ??= new List<DateTime>();
+                    userCache.CachedDates.Add(data);
                     Message showDate = await PRTelegramBot.Helpers.Message.Send(botClient, update, data.ToString("dd.MM.yyyy"));
 
                 }

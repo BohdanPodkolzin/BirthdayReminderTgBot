@@ -21,9 +21,9 @@ namespace tg
 
             string message;
 
-            if (cache.CachedDate != DateTime.MinValue)
+            if (cache.CachedDates != null && cache.CachedDates.Any())
             {
-                message = $"Cached Date: {cache.CachedDate.ToString("dd.MM.yyyy")}";
+                message = $"\n• {string.Join($"\n• ", cache.CachedDates.Select(date => date.ToString("dd.MM.yyyy")))}";
             }
             else
             {
@@ -41,9 +41,9 @@ namespace tg
             UserCache cache = update.GetCacheData<UserCache>();
 
             string message;
-            if (cache.CachedDate != DateTime.MinValue)
+            if (cache.CachedDates != null && cache.CachedDates.Any())
             {
-                message = $"Data in userCache: {cache.CachedDate}";
+                message = $"Data in userCache: \n• {string.Join($"\n• ", cache.CachedDates.Select(date => date.ToString("dd.MM.yyyy")))}";
             }
             else
             {

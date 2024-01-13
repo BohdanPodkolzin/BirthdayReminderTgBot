@@ -4,10 +4,11 @@ namespace tg
 {
     public class UserCache : TelegramCache, ITelegramCache
     {
-        public DateTime CachedDate { get; set; }
+        public List<DateTime> CachedDates { get; set; }
+        public int CountDate { get; set; }
         public bool ClearData()
         {
-            CachedDate = DateTime.MinValue;
+            CachedDates = new List<DateTime>();
             return true;
         }
     }
