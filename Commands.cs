@@ -93,6 +93,17 @@ namespace tg
             
         }
 
+        [InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.AllDel)]
+        public static async Task GetListClear(ITelegramBotClient botClient, Update update)
+        {
+            var command = InlineCallback.GetCommandByCallbackOrNull(update.CallbackQuery?.Data ?? "");
+            if (command != null)
+            {
+                string message = $"Callback command AllDel";
+                Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+            }
+        }   
+
 
     }
 }

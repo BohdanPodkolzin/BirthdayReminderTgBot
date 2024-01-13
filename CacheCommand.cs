@@ -54,6 +54,7 @@ namespace tg
         }
 
         [ReplyMenuHandler("clearcache")]
+        [InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.AllDel)]
         public static async Task ClearCache(ITelegramBotClient botClient, Update update)
         {
             string message = "Checking clear cache";
