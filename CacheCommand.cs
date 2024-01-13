@@ -14,7 +14,6 @@ namespace tg
 {
     public class CacheCommand
     {
-        [ReplyMenuHandler("cache")]
         public static async Task GetCacheData(ITelegramBotClient botClient, Update update)
         {
             var cache = update.GetCacheData<UserCache>();
@@ -35,7 +34,7 @@ namespace tg
         }
 
 
-        [ReplyMenuHandler("resultcache")]
+        [ReplyMenuHandler("Show Countdown")]
         public static async Task CheckCache(ITelegramBotClient botClient, Update update)
         {
             UserCache cache = update.GetCacheData<UserCache>();
@@ -43,7 +42,7 @@ namespace tg
             string message;
             if (cache.CachedDates != null && cache.CachedDates.Any())
             {
-                message = $"Data in userCache: \n• {string.Join($"\n• ", cache.CachedDates.Select(date => date.ToString("dd.MM.yyyy")))}";
+                message = $"Data in userCache:\n• {string.Join($"\n• ", cache.CachedDates.Select(date => date.ToString("dd.MM.yyyy")))}";
             }
             else
             {
@@ -57,7 +56,7 @@ namespace tg
         [InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.AllDel)]
         public static async Task ClearCache(ITelegramBotClient botClient, Update update)
         {
-            string message = "Checking clear cache";
+            string message = "Cache cleared!";
             update.GetCacheData<UserCache>().ClearData();
             Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
         }

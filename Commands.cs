@@ -60,7 +60,6 @@ namespace tg
 
         }
 
-        // Inline menu for EditCountdown
         [ReplyMenuHandler("Edit Countdown")]
         public static async Task EditCountdown(ITelegramBotClient botClient, Update update)
         {
@@ -82,17 +81,6 @@ namespace tg
             Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message, option);
         }
 
-
-
-        [InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.AllDel)]
-        public static async Task DelAllDates(ITelegramBotClient botClient, Update update)
-        {
-
-            string message = $"All list is clear";
-            Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
-            
-        }
-
         [InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.AllDel)]
         public static async Task GetListClear(ITelegramBotClient botClient, Update update)
         {
@@ -102,9 +90,7 @@ namespace tg
                 string message = $"Callback command AllDel";
                 Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
             }
-        }   
-
-
+        }
     }
 }
 
