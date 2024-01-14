@@ -14,15 +14,20 @@ namespace tg
 {
     public class CacheCommand
     {
-        public static async Task GetCacheData(ITelegramBotClient botClient, Update update)
+
+        public static async Task GetDatesCache(ITelegramBotClient botClient, Update update)
         {
             var cache = update.GetCacheData<UserCache>();
+
+            var userName = update.Message.From.Username;
+            cache.PersonName = userName;
+
 
             string message;
 
             if (cache.CachedDates != null && cache.CachedDates.Any())
             {
-                message = $"\n• {string.Join($"\n• ", cache.CachedDates.Select(date => date.ToString("dd.MM.yyyy")))}";
+                message = $"\n• {string.Join($"\n• {cache.PersonName}", cache.CachedDates.Select(date => date.ToString("dd.MM.yyyy")))}";
             }
             else
             {

@@ -64,7 +64,7 @@ namespace tg
         public static async Task EditCountdown(ITelegramBotClient botClient, Update update)
         {
             var addButton = new InlineCallback("Add Countdown", EditCountdownTHeader.Add);
-            var delButton = new InlineCallback("Delete Countdowm", EditCountdownTHeader.Del);
+            var delButton = new InlineCallback("Delete Countdown", EditCountdownTHeader.Del);
             var allDelButton = new InlineCallback("Delete All Schedule", EditCountdownTHeader.AllDel);
 
             List<IInlineContent> menu = new List<IInlineContent>();
@@ -79,6 +79,17 @@ namespace tg
 
             string message = "What do you want to do?";
             Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message, option);
+        }
+
+        [InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.Add)]
+        public static async Task Inline(ITelegramBotClient botClient, Update update)
+        {
+            var command = InlineCallback.GetCommandByCallbackOrNull(update.CallbackQuery?.Data ?? "");
+            if (command != null)
+            {
+                string message = $"Callback command Add";
+                Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+            }
         }
 
         [InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.AllDel)]
