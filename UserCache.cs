@@ -1,8 +1,9 @@
 ﻿using PRTelegramBot.Models;
+using PRTelegramBot.Interface;
 
 namespace tg
 {
-    public class UserCache : TelegramCache, ITelegramCache
+    public class UserCache : ITelegramCache
     {
         public List<DateTime>? CachedDates { get; set; }
         public string? PersonName { get; set; }

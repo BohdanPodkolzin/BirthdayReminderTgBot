@@ -27,7 +27,7 @@ static void TgBot_OnLogError(Exception ex, long? chatId)
     Console.ResetColor();
 }
 
-static void TgBot_OnLogCommon(string msg, PRBot.TelegramEvents typeEvent, ConsoleColor color)
+static void TgBot_OnLogCommon(string msg, Enum? eventTypes, ConsoleColor color)
 {
     Console.ForegroundColor = ConsoleColor.Yellow;
     string commonMsg = $"{DateTime.Now}:{msg}";

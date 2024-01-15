@@ -3,12 +3,13 @@ using PRTelegramBot.Core;
 using PRTelegramBot.Models;
 using PRTelegramBot.Models.CallbackCommands;
 using PRTelegramBot.Models.InlineButtons;
-using PRTelegramBot.Models.Interface;
+
 using PRTelegramBot.Utils;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 using System;
+using PRTelegramBot.Interface;
 
 namespace tg
 {
@@ -67,7 +68,7 @@ namespace tg
             var delButton = new InlineCallback("Delete Countdown", EditCountdownTHeader.Del);
             var allDelButton = new InlineCallback("Delete All Schedule", EditCountdownTHeader.AllDel);
 
-            List<IInlineContent> menu = new List<IInlineContent>();
+            List<IInlineContent> menu = new();
             menu.Add(addButton);
             menu.Add(delButton);
             menu.Add(allDelButton);

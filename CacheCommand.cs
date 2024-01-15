@@ -19,18 +19,13 @@ namespace tg
         {
             var cache = update.GetCacheData<UserCache>();
 
-            var userName = update.Message.From.Username;
-            cache.PersonName = userName;
-
-
             string message;
-
             if (cache.CachedDates != null && cache.CachedDates.Any())
             {
-                message = $"\n• {string.Join($"\n• {cache.PersonName}", cache.CachedDates.Select(date => date.ToString("dd.MM.yyyy")))}";
+                message = $"\n• {string.Join($"\n• ", cache.CachedDates.Select(date => date.ToString("dd.MM.yyyy")))}";
             }
             else
-            {
+            {   
                 message = $"Cache: No cached date";
             }
 
