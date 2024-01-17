@@ -40,13 +40,21 @@ namespace tg
             UserCache cache = update.GetCacheData<UserCache>();
 
             string message;
-            if (cache.CachedDates != null && cache.CachedDates.Any())
+            //if (cache.CachedDates != null && cache.CachedDates.Any())
+            //{
+            //    message = $"Data in userCache:\n• {string.Join($"\n• ", cache.CachedDates.Select(date => date.ToString("dd.MM.yyyy")))}";
+            //}
+            //else
+            //{
+            //    message = "No any data";
+            //}
+            if (cache.PersonName != null)
             {
-                message = $"Data in userCache:\n• {string.Join($"\n• ", cache.CachedDates.Select(date => date.ToString("dd.MM.yyyy")))}";
+                message = $"Name of user {cache.PersonName}";
             }
             else
             {
-                message = "No any data";
+                message = "No datka";
             }
             Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
 
