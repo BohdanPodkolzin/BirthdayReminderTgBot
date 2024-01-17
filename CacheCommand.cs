@@ -25,7 +25,7 @@ namespace tg
                 message = $"\n• {string.Join($"\n• ", cache.CachedDates.Select(date => date.ToString("dd.MM.yyyy")))}";
             }
             else
-            {   
+            {
                 message = $"Cache: No cached date";
             }
 

@@ -18,7 +18,7 @@ namespace tg
         [SlashHandler("/start")]
         [ReplyMenuHandler("/start")]
         public static async Task StartBot(ITelegramBotClient botClient, Update update)
-        {   
+        {
             if (update.Message?.From != null)
             {
                 User user = update.Message.From;
@@ -45,9 +45,9 @@ namespace tg
         [ReplyMenuHandler("/menu")]
         [SlashHandler("/menu")]
         public static async Task Menu(ITelegramBotClient botClient, Update update)
-        {   
+        {
             string menuMessage = $"All opportunities of this bot";
-            
+
             List<KeyboardButton> menuList = new List<KeyboardButton>();
             menuList.Add(new KeyboardButton("About"));
             menuList.Add(new KeyboardButton("Edit Countdown"));
@@ -105,4 +105,3 @@ namespace tg
         }
     }
 }
-
