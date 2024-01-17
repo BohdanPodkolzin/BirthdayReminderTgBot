@@ -3,6 +3,7 @@ using PRTelegramBot.Extensions;
 using PRTelegramBot.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,7 +27,7 @@ namespace tg
 
         public static async Task StepOne(ITelegramBotClient botClient, Update update)
         {
-            string message = $"Entered name{update.Message?.Text}.\nEnter Birthday";
+            string message = $"Entered name {update.Message?.Text}.\nEnter Birthday";
 
             var handler = update.GetStepHandler<StepTelegram>();
             handler!.GetCache<UserCache>().PersonName = update.Message?.Text;
@@ -37,7 +38,7 @@ namespace tg
 
         public static async Task StepTwo(ITelegramBotClient botClient, Update update)
         {
-            string message = $"Entered date {update.Message.Text}";
+            string message = $"Entered date {update.Message?.Text}";
 
             var handler = update.GetStepHandler<StepTelegram>();
             handler!.GetCache<UserCache>().DateT = update.Message?.Text;

@@ -10,8 +10,8 @@ namespace tg
         public string? DateT { get; set; }
         public bool ClearData()
         {
-            PersonName = string.Empty;
-            DateT = string.Empty;
+            PersonName = null;
+            DateT = null;
             CachedDates = new List<DateTime>();
             return true;
         }
