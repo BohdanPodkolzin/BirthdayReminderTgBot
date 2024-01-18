@@ -126,9 +126,7 @@ namespace tg
                     var type = command.Data.GetLastCommandEnum<EditCountdownTHeader>();
                     var data = command.Data.Date;
 
-                    var cache = update.GetCacheData<UserCache>();
-                    cache.CachedDates ??= new List<DateTime>();
-                    cache.CachedDates.Add(data);
+
                     Message showDate = await PRTelegramBot.Helpers.Message.Send(botClient, update, data.ToString("dd.MM.yyyy"));
 
                 }
