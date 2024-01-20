@@ -36,9 +36,9 @@ namespace tg
             cache.PersonName = update.Message?.Text;
 
 
-            Calendar.PickCalendar(botClient, update);
             update.ClearStepUserHandler();
             Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+            await Calendar.PickCalendar(botClient, update);
             //await Calendar.PickCalendar(botClient, update);
         }
         //public static async Task StepTwo(ITelegramBotClient botClient, Update update)

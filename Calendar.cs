@@ -127,7 +127,7 @@ namespace tg
                     var data = command.Data.Date;
 
                     string message = $"Date picked!\n{data.ToString("dd.MM.yyyy")}";
-                    Message showDate = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+                    Message showDate = await PRTelegramBot.Helpers.Message.Edit(botClient, update, message);
 
                 }
             }
