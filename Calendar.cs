@@ -126,8 +126,8 @@ namespace tg
                     var type = command.Data.GetLastCommandEnum<EditCountdownTHeader>();
                     var data = command.Data.Date;
 
-
-                    Message showDate = await PRTelegramBot.Helpers.Message.Send(botClient, update, data.ToString("dd.MM.yyyy"));
+                    string message = $"Date picked!\n{data.ToString("dd.MM.yyyy")}";
+                    Message showDate = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
 
                 }
             }
