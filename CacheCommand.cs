@@ -15,16 +15,18 @@ namespace tg
 {
     public class CacheCommand
     {
-        public static Dictionary<string, DateTime> reminderDict = new Dictionary<string, DateTime>();
-        public static void UpdateCache(string name, DateTime date)
+        //public static Dictionary<string, DateTime> reminderDict = new Dictionary<string, DateTime>();
+        public static async Task UpdateCache(Update update, string name, DateTime date)
         {
-            if (!reminderDict.ContainsKey(name))
+            var cache = update.GetCacheData<UserCache>();
+
+            if (!cache.scheduleDict.ContainsKey(name))
             {
-                reminderDict.Add(name, date);
+                cache.scheduleDict.Add(name, date);
             }
             else
             {
-                reminderDict[name] = date;
+                cache.scheduleDict[name] = date;
             }
         }
 
@@ -33,7 +35,7 @@ namespace tg
         {
             var cache = update.GetCacheData<UserCache>();
 
-            UpdateCache(cache.PersonName, cache.DateT);
+            await UpdateCache(update, cache.PersonName, cache.DateT);
 
 
             string message = $"User`s name {cache.PersonName}, date {cache.DateT}";
@@ -44,14 +46,16 @@ namespace tg
         [ReplyMenuHandler("Show Countdown")]
         public static async Task CheckCache(ITelegramBotClient botClient, Update update)
         {
+            var cache = update.GetCacheData<UserCache>();
             await GetDatesCache(botClient, update);
+
             string message;
-            if (reminderDict.Count > 0)
+            if (cache.scheduleDict.Count > 0)
             {
                 message = "Users in the cache:";
-                foreach (var user in reminderDict)
+                foreach (var user in cache.scheduleDict)
                 {
-                    message += $"\n- Name: {user.Key}, Date: {user.Value}";
+                    message += $"\n- Name: {user.Key}, Date: {user.Value.ToString("dd.MM.yyyy")}";
                 }
             }
             else

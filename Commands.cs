@@ -88,7 +88,7 @@ namespace tg
         public static async Task AddStepOne(ITelegramBotClient botClient, Update update)
         {
             try
-            { 
+            {
                 var command = InlineCallback.GetCommandByCallbackOrNull(update.CallbackQuery?.Data ?? "");
                 if (command != null)
                 {
@@ -107,9 +107,9 @@ namespace tg
         {
             string message = $"Entered name {update.Message?.Text}";
             Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
-            
+
             await Calendar.PickCalendar(botClient, update);
-            
+
             var cache = update.GetCacheData<UserCache>();
             cache.PersonName = update.Message?.Text;
         }
