@@ -128,6 +128,8 @@ namespace tg
                     string message = $"Date picked!\n{data.ToString("dd.MM.yyyy")}";
                     Message showDate = await PRTelegramBot.Helpers.Message.Edit(botClient, update, message);
 
+                    var cache = update.GetCacheData<UserCache>();
+                    cache.DateT = data;
                 }
             }
             catch (Exception ex)
