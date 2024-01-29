@@ -85,16 +85,17 @@ namespace tg
 
 
         [InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.Add)]
-        public static async Task Inline(ITelegramBotClient botClient, Update update)
+        public static async Task AddStepOne(ITelegramBotClient botClient, Update update)
         {
             try
             { 
                 var command = InlineCallback.GetCommandByCallbackOrNull(update.CallbackQuery?.Data ?? "");
                 if (command != null)
                 {
-                    string message = $"/addReminder";
+                    string message = $"Enter person`s Name";
                     Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
-                    update.RegisterStepHandler(new StepTelegram(InlineSteps, new UserCache()));
+                    update.RegisterStepHandler(new StepTelegram(AddStepTwo, new UserCache()));
+
                 }
             }
             catch (Exception ex)
@@ -102,13 +103,15 @@ namespace tg
                 Console.WriteLine(ex);
             }
         }
-        public static async Task InlineSteps(ITelegramBotClient botClient, Update update)
+        public static async Task AddStepTwo(ITelegramBotClient botClient, Update update)
         {
-            string message = $"User entered {update.Message?.Text}";
-            
+            string message = $"Entered name {update.Message?.Text}";
             Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
-
-
+            
+            await Calendar.PickCalendar(botClient, update);
+            
+            var cache = update.GetCacheData<UserCache>();
+            cache.PersonName = update.Message?.Text;
         }
 
         [InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.AllDel)]

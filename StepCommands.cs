@@ -19,8 +19,6 @@ namespace tg
     public class StepCommands
     {
 
-
-        
         public static async Task StartStep(ITelegramBotClient botClient, Update update)
         {
             string message = "Write persona name";
