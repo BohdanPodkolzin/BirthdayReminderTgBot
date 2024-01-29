@@ -11,10 +11,9 @@ namespace tg
         public string? ChosenDate { get; set; }
         public bool ClearData()
         {
-            PersonName = null;
-            DateT = null;
-            ChosenDate = null;
-            CachedDates = new List<DateTime>();
+            this.PersonName = null;
+            this.DateT = null;
+            this.CachedDates = new List<DateTime>();
             return true;
         }
     }

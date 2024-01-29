@@ -10,6 +10,8 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 using System;
 using PRTelegramBot.Interface;
+using PRTelegramBot.Exceptions;
+using PRTelegramBot.Extensions;
 
 namespace tg
 {
@@ -43,7 +45,6 @@ namespace tg
 
 
         [ReplyMenuHandler("/menu")]
-        [SlashHandler("/menu")]
         public static async Task Menu(ITelegramBotClient botClient, Update update)
         {
             string menuMessage = $"All opportunities of this bot";
@@ -82,15 +83,32 @@ namespace tg
             Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message, option);
         }
 
+
         [InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.Add)]
         public static async Task Inline(ITelegramBotClient botClient, Update update)
         {
-            var command = InlineCallback.GetCommandByCallbackOrNull(update.CallbackQuery?.Data ?? "");
-            if (command != null)
-            {
-                string message = $"Callback command Add";
-                Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+            try
+            { 
+                var command = InlineCallback.GetCommandByCallbackOrNull(update.CallbackQuery?.Data ?? "");
+                if (command != null)
+                {
+                    string message = $"/addReminder";
+                    Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+                    update.RegisterStepHandler(new StepTelegram(InlineSteps, new UserCache()));
+                }
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+        public static async Task InlineSteps(ITelegramBotClient botClient, Update update)
+        {
+            string message = $"User entered {update.Message?.Text}";
+            
+            Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+
+
         }
 
         [InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.AllDel)]

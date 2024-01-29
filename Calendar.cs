@@ -18,7 +18,6 @@ namespace tg
         public static DateTimeFormatInfo dtfi = CultureInfo.GetCultureInfo("en-GB", false).DateTimeFormat;
 
 
-        [InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.Add)]
         public static async Task PickCalendar(ITelegramBotClient botClient, Update update)
         {
             var calendarMarkup = Markup.Calendar(DateTime.Now, dtfi); // dtfi is DateTimeFormatInfo
