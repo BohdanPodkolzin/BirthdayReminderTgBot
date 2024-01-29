@@ -1,7 +1,7 @@
 ﻿using PRTelegramBot.Models;
 using PRTelegramBot.Interface;
 
-namespace tg
+namespace tg.UsersCache
 {
     public class UserCache : ITelegramCache
     {
@@ -11,10 +11,10 @@ namespace tg
         public DateTime DateT { get; set; }
         public bool ClearData()
         {
-            this.scheduleDict.Clear();
-            this.PersonName = null;
-            this.DateT = DateTime.MinValue;
-            this.CachedDates = new List<DateTime>();
+            scheduleDict.Clear();
+            PersonName = null;
+            DateT = DateTime.MinValue;
+            CachedDates = new List<DateTime>();
             return true;
         }
     }

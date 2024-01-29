@@ -12,8 +12,10 @@ using System;
 using PRTelegramBot.Interface;
 using PRTelegramBot.Exceptions;
 using PRTelegramBot.Extensions;
+using tg.Models;
+using tg.UsersCache;
 
-namespace tg
+namespace tg.TelegramCommands
 {
     public class Commands
     {

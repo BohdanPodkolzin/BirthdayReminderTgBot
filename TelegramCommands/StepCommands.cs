@@ -13,8 +13,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using tg.UsersCache;
 
-namespace tg
+namespace tg.TelegramCommands
 {
     public class StepCommands
     {
@@ -35,7 +36,7 @@ namespace tg
 
             update.ClearStepUserHandler();
             await Calendar.PickCalendar(botClient, update);
-            
+
         }
     }
 }

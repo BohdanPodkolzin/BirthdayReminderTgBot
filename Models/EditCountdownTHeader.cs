@@ -2,7 +2,7 @@
 using System.ComponentModel;
 
 
-namespace tg
+namespace tg.Models
 {
     [InlineCommand]
     public enum EditCountdownTHeader

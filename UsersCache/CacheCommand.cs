@@ -8,10 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using static tg.UserCache;
+using tg.Models;
+using static tg.UsersCache.UserCache;
 
 
-namespace tg
+namespace tg.UsersCache
 {
     public class CacheCommand
     {
