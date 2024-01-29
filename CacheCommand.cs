@@ -15,39 +15,33 @@ namespace tg
 {
     public class CacheCommand
     {
-        public static Dictionary<string, DateTime> nameDate = new Dictionary<string, DateTime>();
-        public static DateTime CheckDate(string name)
+        public static Dictionary<string, DateTime> reminderDict = new Dictionary<string, DateTime>();
+        public static void UpdateCache(string name, DateTime date)
         {
-            return nameDate[name];
+            if (!reminderDict.ContainsKey(name))
+            {
+                reminderDict.Add(name, date);
+            }
+            else
+            {
+                reminderDict[name] = date;
+            }
         }
 
-        [ReplyMenuHandler("Show Countdown")]
+
         public static async Task GetDatesCache(ITelegramBotClient botClient, Update update)
         {
             var cache = update.GetCacheData<UserCache>();
 
-            nameDate.Add(cache.PersonName, cache.DateT);
-            var rightdate = CheckDate(cache.PersonName);
+            UpdateCache(cache.PersonName, cache.DateT);
 
-
-
-            string message = $"Name of userrra {cache.PersonName}, date {rightdate}";
-
-
-            //string message;
-            //if (cache.CachedDates != null && cache.CachedDates.Any())
-            //{
-            //    message = $"\n• {string.Join($"\n• ", cache.CachedDates.Select(date => date.ToString("dd.MM.yyyy")))}";
-            //}
-            //else
-            //{
-            //    message = $"Cache: No cached date";
-            //}
-
+            
+            string message = $"User`s name {cache.PersonName}, date {cache.DateT}";
             Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
 
         }
 
+        [ReplyMenuHandler("Show Countdown")]
         public static async Task CheckCache(ITelegramBotClient botClient, Update update)
         {
             UserCache cache = update.GetCacheData<UserCache>();
