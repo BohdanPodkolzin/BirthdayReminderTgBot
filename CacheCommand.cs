@@ -35,26 +35,30 @@ namespace tg
 
             UpdateCache(cache.PersonName, cache.DateT);
 
-            
+
             string message = $"User`s name {cache.PersonName}, date {cache.DateT}";
-            Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+            //Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
 
         }
 
         [ReplyMenuHandler("Show Countdown")]
         public static async Task CheckCache(ITelegramBotClient botClient, Update update)
         {
-            UserCache cache = update.GetCacheData<UserCache>();
-
+            await GetDatesCache(botClient, update);
             string message;
-            if (cache.PersonName != null)
+            if (reminderDict.Count > 0)
             {
-                message = $"Name of user {cache.PersonName}, date {cache.DateT}";
+                message = "Users in the cache:";
+                foreach (var user in reminderDict)
+                {
+                    message += $"\n- Name: {user.Key}, Date: {user.Value}";
+                }
             }
             else
             {
-                message = "No datka";
+                message = "No users in the cache.";
             }
+
             Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
 
         }
@@ -70,4 +74,5 @@ namespace tg
 
 
     }
+
 }
