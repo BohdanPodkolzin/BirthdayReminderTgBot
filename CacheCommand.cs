@@ -15,7 +15,6 @@ namespace tg
 {
     public class CacheCommand
     {
-        //public static Dictionary<string, DateTime> reminderDict = new Dictionary<string, DateTime>();
         public static async Task UpdateCache(Update update, string name, DateTime date)
         {
             var cache = update.GetCacheData<UserCache>();
@@ -31,23 +30,10 @@ namespace tg
         }
 
 
-        public static async Task GetDatesCache(ITelegramBotClient botClient, Update update)
-        {
-            var cache = update.GetCacheData<UserCache>();
-
-            await UpdateCache(update, cache.PersonName, cache.DateT);
-
-
-            string message = $"User`s name {cache.PersonName}, date {cache.DateT}";
-            //Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
-
-        }
-
         [ReplyMenuHandler("Show Countdown")]
         public static async Task CheckCache(ITelegramBotClient botClient, Update update)
         {
             var cache = update.GetCacheData<UserCache>();
-            await GetDatesCache(botClient, update);
 
             string message;
             if (cache.scheduleDict.Count > 0)

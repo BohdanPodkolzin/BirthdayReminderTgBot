@@ -35,6 +35,7 @@ namespace tg
 
             update.ClearStepUserHandler();
             await Calendar.PickCalendar(botClient, update);
+            
         }
     }
 }
