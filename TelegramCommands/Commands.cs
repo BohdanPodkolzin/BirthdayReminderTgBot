@@ -139,9 +139,21 @@ namespace tg.TelegramCommands
         
         public static async Task StepTwoDate(ITelegramBotClient botClient, Update update)
         {
-            string message = $"Deleted reminder {update.Message?.Text}";
-            Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+            string? enteredName = update.Message?.Text;
+            string message = $"No name such as {enteredName}";
 
+
+            var cache = update.GetCacheData<UserCache>();
+            foreach (string userName in cache.scheduleDict.Keys)
+            {
+                if (userName == enteredName)
+                {
+                    cache.scheduleDict.Remove(userName);
+                    message = $"Deleted reminder {enteredName}";
+                }
+            }
+
+            Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
         }
 
 
