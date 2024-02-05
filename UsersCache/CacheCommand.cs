@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using tg.Models;
-using static tg.UsersCache.UserCache;
 
 
 namespace tg.UsersCache
