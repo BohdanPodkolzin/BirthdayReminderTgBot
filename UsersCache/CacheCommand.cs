@@ -1,5 +1,6 @@
 ﻿using PRTelegramBot.Attributes;
 using PRTelegramBot.Extensions;
+using PRTelegramBot.Models.InlineButtons;
 using System;
 using System.Collections.Generic;
 using System.Linq;

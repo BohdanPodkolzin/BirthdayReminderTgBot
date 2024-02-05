@@ -106,8 +106,6 @@ namespace tg.TelegramCommands
             }
         }
 
-
-
         public static async Task AddStepTwo(ITelegramBotClient botClient, Update update)
         {
             string message = $"Entered name {update.Message?.Text}";
@@ -119,25 +117,35 @@ namespace tg.TelegramCommands
             cache.PersonName = update.Message?.Text;
         }
 
+
         [InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.Del)]
-        
-        public static async Task DelSchedule(ITelegramBotClient botClient, Update update)
+        public static async Task StepOneDel(ITelegramBotClient botClient, Update update)
         {
             try
             {
                 var command = InlineCallback.GetCommandByCallbackOrNull(update.CallbackQuery?.Data ?? "");
                 if (command != null)
                 {
-                    string message = "Callback command Del";
+                    string message = "Enter name person which want to delete:";
                     Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+                    update.RegisterStepHandler(new StepTelegram(StepTwoDate, new  UserCache()));
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
             }
+        }
+        
+        public static async Task StepTwoDate(ITelegramBotClient botClient, Update update)
+        {
+            string message = $"Deleted reminder {update.Message?.Text}";
+            Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
 
         }
+
+
+
 
 
     }
