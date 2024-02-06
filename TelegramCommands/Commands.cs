@@ -126,7 +126,7 @@ namespace tg.TelegramCommands
                 var command = InlineCallback.GetCommandByCallbackOrNull(update.CallbackQuery?.Data ?? "");
                 if (command != null)
                 {
-                    string message = "Enter name person which want to delete:";
+                    string message = "Specify the name you want to remove from the list:";
                     Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
                     update.RegisterStepHandler(new StepTelegram(StepTwoDate, new  UserCache()));
                 }
@@ -140,13 +140,12 @@ namespace tg.TelegramCommands
         public static async Task StepTwoDate(ITelegramBotClient botClient, Update update)
         {
             string? enteredName = update.Message?.Text;
-            string message = $"No name such as {enteredName}";
-
+            string message = $"There is no person with name {enteredName}\nPlease enter a valid title";
 
             var cache = update.GetCacheData<UserCache>();
             foreach (string userName in cache.scheduleDict.Keys)
             {
-                if (userName == enteredName)
+                if (userName.Equals(enteredName))
                 {
                     cache.scheduleDict.Remove(userName);
                     message = $"Deleted reminder {enteredName}";

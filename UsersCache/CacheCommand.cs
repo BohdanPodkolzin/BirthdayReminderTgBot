@@ -16,6 +16,38 @@ namespace tg.UsersCache
 {
     public class CacheCommand
     {
+        [ReplyMenuHandler("Show Countdown")]
+        public static async Task CheckCache(ITelegramBotClient botClient, Update update)
+        {
+            var cache = update.GetCacheData<UserCache>();
+
+            string message;
+            if (cache.scheduleDict.Count > 0)
+            {
+                message = "Users in the cache:";
+                foreach (var user in cache.scheduleDict)
+                {
+                    int daysUntilBirthday = GetDaysUntilBirthday(user.Value);
+                    message += $"\n- Name: {user.Key}, Date: {user.Value.ToString("dd.MM.yyyy")}, Days until birthday: {daysUntilBirthday}";
+                }
+            }
+            else
+            {
+                message = "No users in the cache.";
+            }
+
+            Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+        }
+
+        [ReplyMenuHandler("clearcache")]
+        [InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.AllDel)]
+        public static async Task ClearCache(ITelegramBotClient botClient, Update update)
+        {
+            string message = "Cache cleared!";
+            update.GetCacheData<UserCache>().ClearData();
+            Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+        }
+
         public static async Task UpdateCache(Update update, string name, DateTime date)
         {
             var cache = update.GetCacheData<UserCache>();
@@ -30,40 +62,21 @@ namespace tg.UsersCache
             }
         }
 
-
-        [ReplyMenuHandler("Show Countdown")]
-        public static async Task CheckCache(ITelegramBotClient botClient, Update update)
+        private static int GetDaysUntilBirthday(DateTime birthday)
         {
-            var cache = update.GetCacheData<UserCache>();
+            DateTime currentDate = DateTime.Today;
+            DateTime birthdayThisYear = new DateTime(currentDate.Year, birthday.Month, birthday.Day);
 
-            string message;
-            if (cache.scheduleDict.Count > 0)
+            if (birthdayThisYear < currentDate)
             {
-                message = "Users in the cache:";
-                foreach (var user in cache.scheduleDict)
-                {
-                    message += $"\n- Name: {user.Key}, Date: {user.Value.ToString("dd.MM.yyyy")}";
-                }
-            }
-            else
-            {
-                message = "No users in the cache.";
+                birthdayThisYear = birthdayThisYear.AddYears(1);
             }
 
-            Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+            TimeSpan difference = birthdayThisYear - currentDate;
+            int daysUntilBirthday = (int)difference.TotalDays;
 
+            return daysUntilBirthday;
         }
-
-        [ReplyMenuHandler("clearcache")]
-        [InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.AllDel)]
-        public static async Task ClearCache(ITelegramBotClient botClient, Update update)
-        {
-            string message = "Cache cleared!";
-            update.GetCacheData<UserCache>().ClearData();
-            Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
-        }
-
-
     }
 
 }

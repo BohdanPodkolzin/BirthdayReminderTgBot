@@ -131,7 +131,7 @@ namespace tg
                     Message showDate = await PRTelegramBot.Helpers.Message.Edit(botClient, update, message);
 
 
-                    //cache part
+                    //caching date
                     var cache = update.GetCacheData<UserCache>();
                     cache.DateT = data;
                     await CacheCommand.UpdateCache(update, cache.PersonName ?? "unknown", cache.DateT);
