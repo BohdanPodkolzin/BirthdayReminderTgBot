@@ -28,7 +28,7 @@ namespace tg.UsersCache
                 foreach (var user in cache.scheduleDict)
                 {
                     int daysUntilBirthday = GetDaysUntilBirthday(user.Value);
-                    message += $"\n- Name: {user.Key}, Date: {user.Value.ToString("dd.MM.yyyy")}, Days until birthday: {daysUntilBirthday}";
+                    message += $"\n- {user.Key}, {user.Value.ToString("dd.MM.yyyy")}, days until birthday: {daysUntilBirthday}";
                 }
             }
             else
@@ -39,11 +39,11 @@ namespace tg.UsersCache
             Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
         }
 
-        [ReplyMenuHandler("clearcache")]
+
         [InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.AllDel)]
         public static async Task ClearCache(ITelegramBotClient botClient, Update update)
         {
-            string message = "Cache cleared!";
+            string message = "Your list has been successfully cleared!";
             update.GetCacheData<UserCache>().ClearData();
             Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
         }
