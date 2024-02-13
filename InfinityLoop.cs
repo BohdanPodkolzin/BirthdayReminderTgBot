@@ -13,7 +13,7 @@ namespace tg
 {
     public class InfinityLoop
     {
-        private readonly TimeSpan _checkInterval = TimeSpan.FromHours(12); // Every 12 hours check again
+        private readonly TimeSpan _checkInterval = TimeSpan.FromHours(6); // Every 12 hours check again
 
         [ReplyMenuHandler("/go")]
         public async Task StartReminderLoop(ITelegramBotClient botClient, Update update)
@@ -21,6 +21,7 @@ namespace tg
             for (;true;)
             {
                 await ReminderBack.RemindPersonForBirthday(botClient, update);
+                await Task.Delay(_checkInterval);
             }
         }
 
