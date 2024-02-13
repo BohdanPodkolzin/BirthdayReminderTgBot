@@ -19,7 +19,6 @@ namespace tg.TelegramCommands
 {
     public class Commands
     {
-        [SlashHandler("/start")]
         [ReplyMenuHandler("/start")]
         public static async Task StartBot(ITelegramBotClient botClient, Update update)
         {
@@ -32,6 +31,7 @@ namespace tg.TelegramCommands
                 {
                     string startMessage = $"🖐️ Hey, @{userNickName}!\nTo make your first schedule of bithdays enter /menu";
                     Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, startMessage);
+                    await InfinityLoop.StartReminderLoop(botClient, update);
                 }
             }
 
