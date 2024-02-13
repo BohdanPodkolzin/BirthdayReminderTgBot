@@ -18,15 +18,16 @@ namespace tg
         {
             DateTime currDate = DateTime.Today;
             var cache = update.GetCacheData<UserCache>();
+            Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, "Test");
 
-            foreach (var user in cache.scheduleDict)
-            {
-                if (user.Value.Month.Equals(currDate.Month) && user.Value.Day.Equals(currDate.Day))
-                {
-                    string message = $"Today is {user.Key}'s birthday!";
-                    Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
-                }
-            }
+            //foreach (var user in cache.scheduleDict)
+            //{
+            //    if (user.Value.Month.Equals(currDate.Month) && user.Value.Day.Equals(currDate.Day))
+            //    {
+            //        string message = $"Today is {user.Key}'s birthday!";
+            //        Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+            //    }
+            //}
         }
     }
 }
