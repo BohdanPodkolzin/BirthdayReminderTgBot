@@ -13,17 +13,24 @@ namespace tg
 {
     public class InfinityLoop
     {
-        private static DateTime _lastCheckedDate = DateTime.Today.AddDays(-1);
-        private static readonly TimeSpan _checkInterval = TimeSpan.FromMinutes(30); // Every 12 hours check again
+        private struct LastCheckedDateInfo
+        {
+            public DateTime LastCheckedDate;
+        }
+
+        private static readonly Dictionary<int, LastCheckedDateInfo> _lastCheckedDates = new Dictionary<int, LastCheckedDateInfo>();
+        private static readonly TimeSpan _checkInterval = TimeSpan.FromSeconds(3); 
 
         public static async Task StartReminderLoop(ITelegramBotClient botClient, Update update)
         {
+            int userId = (int)update.Message.From.Id;
+
             for (;;)
             {
-                if (_lastCheckedDate != DateTime.Today)
+                if (!_lastCheckedDates.TryGetValue(userId, out LastCheckedDateInfo info))
                 {
                     await ReminderBack.RemindPersonForBirthday(botClient, update);
-                    _lastCheckedDate = DateTime.Today;
+                    _lastCheckedDates[userId] = new LastCheckedDateInfo { LastCheckedDate = DateTime.Today };
                 }
                 await Task.Delay(_checkInterval);
             }
