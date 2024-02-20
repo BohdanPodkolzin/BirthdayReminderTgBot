@@ -15,8 +15,6 @@ namespace tg
 
         public static async Task StartReminderLoop(ITelegramBotClient botClient, Update update)
         {
-
-
             for (;;)
             {
                 if (_lastCheckDate.Day != DateTime.Now.Day)
