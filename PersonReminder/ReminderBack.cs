@@ -9,7 +9,7 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using tg.UsersCache;
 
-namespace tg
+namespace tg.PersonReminder
 {
     public class ReminderBack
     {

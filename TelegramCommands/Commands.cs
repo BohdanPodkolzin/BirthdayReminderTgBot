@@ -3,7 +3,6 @@ using PRTelegramBot.Core;
 using PRTelegramBot.Models;
 using PRTelegramBot.Models.CallbackCommands;
 using PRTelegramBot.Models.InlineButtons;
-
 using PRTelegramBot.Utils;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -14,6 +13,7 @@ using PRTelegramBot.Exceptions;
 using PRTelegramBot.Extensions;
 using tg.Models;
 using tg.UsersCache;
+using tg.PersonReminder;
 
 namespace tg.TelegramCommands
 {
