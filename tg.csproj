@@ -21,4 +21,20 @@
     <None Remove="C:\Users\User\.nuget\packages\prtelegrambot\0.5.4\build\\README.txt" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="C:\Users\User\.nuget\packages\prtelegrambot\0.5.5\build\\README.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="C:\Users\User\.nuget\packages\prtelegrambot\0.5.5\build\\README.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="C:\Users\User\.nuget\packages\prtelegrambot\0.5.5\build\\README.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="C:\Users\User\.nuget\packages\prtelegrambot\0.5.5\build\\README.txt" />
+  </ItemGroup>
+
 </Project>

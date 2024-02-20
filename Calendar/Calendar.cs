@@ -8,7 +8,6 @@ using THeader = PRTelegramBot.Models.Enums.THeader;
 using PRTelegramBot.Models.InlineButtons;
 using PRTelegramBot.Models;
 using PRTelegramBot.Models.CallbackCommands;
-using System.Security.Cryptography.X509Certificates;
 using tg.Models;
 using tg.UsersCache;
 

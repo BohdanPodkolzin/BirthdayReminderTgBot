@@ -21,22 +21,22 @@ namespace tg.UsersCache
         {
             var cache = update.GetCacheData<UserCache>();
 
-            string message;
+            StringBuilder message = new StringBuilder();
             if (cache.scheduleDict.Count > 0)
             {
-                message = "Users in the cache:";
+                message.Append("<b>Users in the cache:</b>");
                 foreach (var user in cache.scheduleDict)
                 {
                     int daysUntilBirthday = GetDaysUntilBirthday(user.Value);
-                    message += $"\n- {user.Key}, {user.Value.ToString("dd.MM.yyyy")}, days until birthday: {daysUntilBirthday}";
+                    message.AppendLine($"\n- {user.Key}, {user.Value.ToString("dd.MM.yyyy")}, days until birthday: {daysUntilBirthday}");
                 }
             }
             else
             {
-                message = "No users in the cache.";
+                message.Append("No users in the cache.");
             }
 
-            Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+            Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message.ToString());
         }
 
 
