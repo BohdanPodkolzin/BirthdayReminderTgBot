@@ -148,7 +148,7 @@ namespace tg.TelegramCommands
                 if (userName.Equals(enteredName))
                 {
                     cache.scheduleDict.Remove(userName);
-                    message = $"Deleted reminder {enteredName}";
+                    message = $"<b>{enteredName}</b> is no longer in the schedule";
                 }
             }
 
