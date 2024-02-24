@@ -25,7 +25,7 @@ namespace tg
             var option = new OptionMessage();
             option.MenuInlineKeyboardMarkup = calendarMarkup;
 
-            Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update.GetChatId(), "Pick a date", option);
+            Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update.GetChatId(), "<b>Pick a date</b>", option);
         }
 
 
@@ -126,7 +126,7 @@ namespace tg
                     var type = command.Data.GetLastCommandEnum<EditCountdownTHeader>();
                     var data = command.Data.Date;
 
-                    string message = $"Date picked!\n{data.ToString("dd.MM.yyyy")}";
+                    string message = $"Picked date: <b>{data.ToString("dd.MM.yyyy")}</b>";
                     Message showDate = await PRTelegramBot.Helpers.Message.Edit(botClient, update, message);
 
 

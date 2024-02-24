@@ -24,16 +24,16 @@ namespace tg.UsersCache
             StringBuilder message = new StringBuilder();
             if (cache.scheduleDict.Count > 0)
             {
-                message.Append("<b>Users in the cache:</b>");
+                message.Append("<b>Birthdays schedule</b>");
                 foreach (var user in cache.scheduleDict)
                 {
                     int daysUntilBirthday = GetDaysUntilBirthday(user.Value);
-                    message.AppendLine($"\n- {user.Key}, {user.Value.ToString("dd.MM.yyyy")}, days until birthday: {daysUntilBirthday}");
+                    message.AppendLine($"\n· <b>{user.Key}</b>, {user.Value.ToString("dd.MM.yyyy")} until birthday: <b>{(daysUntilBirthday.Equals(0) ? "today!" : daysUntilBirthday)}</b>");
                 }
             }
             else
             {
-                message.Append("No users in the cache.");
+                message.Append("<b>Your schedule is empty</b>.");
             }
 
             Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message.ToString());

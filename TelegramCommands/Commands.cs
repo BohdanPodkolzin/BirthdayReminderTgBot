@@ -49,7 +49,7 @@ namespace tg.TelegramCommands
         [ReplyMenuHandler("/menu")]
         public static async Task Menu(ITelegramBotClient botClient, Update update)
         {
-            string menuMessage = $"All opportunities of this bot";
+            string menuMessage = $"Homepage🏡";
 
             List<KeyboardButton> menuList = new List<KeyboardButton>();
             menuList.Add(new KeyboardButton("About"));
@@ -81,7 +81,7 @@ namespace tg.TelegramCommands
             OptionMessage option = new OptionMessage();
             option.MenuInlineKeyboardMarkup = editorMenu;
 
-            string message = "What do you want to do?";
+            string message = "Editing Schedule";
             Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message, option);
         }
 
