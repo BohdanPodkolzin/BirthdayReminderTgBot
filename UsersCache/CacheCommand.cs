@@ -24,11 +24,11 @@ namespace tg.UsersCache
             StringBuilder message = new StringBuilder();
             if (cache.scheduleDict.Count > 0)
             {
-                message.Append("<b>Birthdays schedule</b>");
+                message.Append("<b>Birthdays schedule</b>\n");
                 foreach (var user in cache.scheduleDict)
                 {
                     int daysUntilBirthday = GetDaysUntilBirthday(user.Value);
-                    message.AppendLine($"\n· <b>{user.Key}</b>, {user.Value.ToString("dd.MM.yyyy")} until birthday: <b>{(daysUntilBirthday.Equals(0) ? "today!" : daysUntilBirthday)}</b>");
+                    message.AppendLine($"\n· <b>{user.Key}</b>, {user.Value.ToString("dd.MM.yyyy")} {(daysUntilBirthday.Equals(0) ? "<b>birthday is today!</b>" : $"until birthday: <b>{daysUntilBirthday}</b>")}");
                 }
             }
             else

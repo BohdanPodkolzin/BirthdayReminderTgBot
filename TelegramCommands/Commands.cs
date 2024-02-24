@@ -94,7 +94,7 @@ namespace tg.TelegramCommands
                 var command = InlineCallback.GetCommandByCallbackOrNull(update.CallbackQuery?.Data ?? "");
                 if (command != null)
                 {
-                    string message = $"Enter person`s Name";
+                    string message = $"Enter the name of the person";
                     Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
                     update.RegisterStepHandler(new StepTelegram(AddStepTwo, new UserCache()));
 
@@ -108,7 +108,7 @@ namespace tg.TelegramCommands
 
         public static async Task AddStepTwo(ITelegramBotClient botClient, Update update)
         {
-            string message = $"Entered name {update.Message?.Text}";
+            string message = $"Entered name <b>{update.Message?.Text}</b>";
             Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
 
             await Calendar.PickCalendar(botClient, update);
