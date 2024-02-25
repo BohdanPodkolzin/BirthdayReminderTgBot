@@ -1,7 +1,5 @@
 ﻿using PRTelegramBot.Attributes;
-using PRTelegramBot.Core;
 using PRTelegramBot.Models;
-using PRTelegramBot.Models.CallbackCommands;
 using PRTelegramBot.Models.InlineButtons;
 using PRTelegramBot.Utils;
 using Telegram.Bot;
@@ -9,7 +7,6 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 using System;
 using PRTelegramBot.Interface;
-using PRTelegramBot.Exceptions;
 using PRTelegramBot.Extensions;
 using tg.Models;
 using tg.UsersCache;
