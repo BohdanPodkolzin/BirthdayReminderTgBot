@@ -40,13 +40,13 @@ namespace tg.UsersCache
         }
 
 
-        [InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.AllDel)]
-        public static async Task ClearCache(ITelegramBotClient botClient, Update update)
-        {
-            string message = "Your list has been successfully cleared!";
-            update.GetCacheData<UserCache>().ClearData();
-            Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
-        }
+        //[InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.AllDel)]
+        //public static async Task ClearCache(ITelegramBotClient botClient, Update update)
+        //{
+        //    string message = "Your list has been successfully cleared!";
+        //    update.GetCacheData<UserCache>().ClearData();
+        //    Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+        //}
 
         public static async Task UpdateCache(Update update, string name, DateTime date)
         {

@@ -13,7 +13,7 @@ namespace tg.TelegramCommands
 {
     public class AllSceduleConfrim
     {
-        [ReplyMenuHandler("Test")]
+        [InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.AllDel)]
         public static async Task Confirm(ITelegramBotClient botClient, Update update)
         {
             var message = "Confirm deleting all list";
