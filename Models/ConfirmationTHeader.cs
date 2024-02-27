@@ -1,12 +1,20 @@
-﻿using System;
+﻿using PRTelegramBot.Attributes;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace tg.Models
 {
-    internal class ConfirmationTHeader
+    [InlineCommand]
+    public enum ConfirmationTHeader
     {
+        [Description("Yes")]
+        Yes = 601,
+        [Description("No")]
+        No,
+
     }
 }
