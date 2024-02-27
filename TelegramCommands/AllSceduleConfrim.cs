@@ -16,7 +16,7 @@ namespace tg.TelegramCommands
         [InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.AllDel)]
         public static async Task Confirm(ITelegramBotClient botClient, Update update)
         {
-            var message = "Confirm deleting all list";
+            var message = "Confirm clearing all list";
 
             var yesButton = new InlineCallback("Yes", ConfirmationTHeader.Yes);
             var noButton = new InlineCallback("No", ConfirmationTHeader.No);
