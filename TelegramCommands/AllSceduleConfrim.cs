@@ -31,9 +31,6 @@ namespace tg.TelegramCommands
             option.MenuInlineKeyboardMarkup = inlineKeyboard;
 
             await PRTelegramBot.Helpers.Message.Send(botClient, update, message, option);
-
-
-
         }
     }
 }
