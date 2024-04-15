@@ -14,8 +14,6 @@ namespace tg.TelegramCommands
 {
     public class EditCountdownCommands
     {
-
-
         [InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.Add)]
         public static async Task AddStepOne(ITelegramBotClient botClient, Update update)
         {
@@ -89,11 +87,13 @@ namespace tg.TelegramCommands
         [InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.AllDel)]
         public static async Task Confirm(ITelegramBotClient botClient, Update update)
         {
-            int prevMessage = MenuCommands.GetMessageId();
-            botClient.DeleteMessageAsync(update.CallbackQuery.Message.Chat.Id, prevMessage);
+            if (update.CallbackQuery != null)
+            {
+                int prevMessageId = MenuCommands.GetMessageId(update.CallbackQuery.Message!.Chat.Id);
+                botClient?.DeleteMessageAsync(update.CallbackQuery.Message.Chat.Id, prevMessageId);
+            }
 
             var message = "Confirm clearing all list";
-
             var yesButton = new InlineCallback("Yes", ConfirmationTHeader.Yes);
             var noButton = new InlineCallback("No", ConfirmationTHeader.No);
 

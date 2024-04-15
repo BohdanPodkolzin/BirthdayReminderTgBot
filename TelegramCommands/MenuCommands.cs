@@ -13,7 +13,7 @@ namespace tg.TelegramCommands
 
     public class MenuCommands
     {
-        private static int _editCountdownMessageId;
+        private static Dictionary<long, int> _editCountdownMessageIds = new Dictionary<long, int>();
 
         [ReplyMenuHandler("/menu")]
         public static async Task Menu(ITelegramBotClient botClient, Update update)
@@ -45,7 +45,13 @@ namespace tg.TelegramCommands
         [ReplyMenuHandler("Edit Countdown")]
         public static async Task EditCountdown(ITelegramBotClient botClient, Update update)
         {
+            long chatId = update.Message.Chat.Id;
+            int prevMessageId = GetMessageId(chatId);
 
+            if (prevMessageId != -1)
+            {
+                await botClient.DeleteMessageAsync(chatId, prevMessageId);
+            }
 
             var addButton = new InlineCallback("Add Countdown", EditCountdownTHeader.Add);
             var delButton = new InlineCallback("Delete Countdown", EditCountdownTHeader.Del);
@@ -63,12 +69,19 @@ namespace tg.TelegramCommands
 
             string message = "Editing Schedule";
             Message sendMessage = await PRTelegramBot.Helpers.Message.Send(botClient, update, message, option);
-            _editCountdownMessageId = sendMessage.MessageId;
+
+            _editCountdownMessageIds[chatId] = sendMessage.MessageId;
         }
 
-        public static int GetMessageId()
+        public static int GetMessageId(long chatId)
         {
-            return _editCountdownMessageId;
+            if (_editCountdownMessageIds.ContainsKey(chatId))
+            {
+                int messageId = _editCountdownMessageIds[chatId];
+                _editCountdownMessageIds.Remove(chatId);
+                return messageId;
+            }
+            return -1;
         }
 
     }
