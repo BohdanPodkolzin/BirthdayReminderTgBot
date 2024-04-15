@@ -1,12 +1,6 @@
 ﻿using PRTelegramBot.Attributes;
 using PRTelegramBot.Extensions;
-using PRTelegramBot.Models.InlineButtons;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using tg.Models;

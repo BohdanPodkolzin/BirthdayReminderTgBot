@@ -1,10 +1,4 @@
-﻿using PRTelegramBot.Attributes;
-using PRTelegramBot.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using PRTelegramBot.Extensions;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using tg.UsersCache;

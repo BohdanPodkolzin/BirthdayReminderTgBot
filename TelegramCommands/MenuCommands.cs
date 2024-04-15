@@ -5,17 +5,15 @@ using PRTelegramBot.Utils;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
-using System;
 using PRTelegramBot.Interface;
-using PRTelegramBot.Extensions;
 using tg.Models;
-using tg.UsersCache;
-using tg.PersonReminder;
 
 namespace tg.TelegramCommands
 {
+
     public class MenuCommands
     {
+        private static int _editCountdownMessageId;
 
         [ReplyMenuHandler("/menu")]
         public static async Task Menu(ITelegramBotClient botClient, Update update)
@@ -47,6 +45,8 @@ namespace tg.TelegramCommands
         [ReplyMenuHandler("Edit Countdown")]
         public static async Task EditCountdown(ITelegramBotClient botClient, Update update)
         {
+
+
             var addButton = new InlineCallback("Add Countdown", EditCountdownTHeader.Add);
             var delButton = new InlineCallback("Delete Countdown", EditCountdownTHeader.Del);
             var allDelButton = new InlineCallback("Delete All Schedule", EditCountdownTHeader.AllDel);
@@ -62,7 +62,13 @@ namespace tg.TelegramCommands
             option.MenuInlineKeyboardMarkup = editorMenu;
 
             string message = "Editing Schedule";
-            Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message, option);
+            Message sendMessage = await PRTelegramBot.Helpers.Message.Send(botClient, update, message, option);
+            _editCountdownMessageId = sendMessage.MessageId;
+        }
+
+        public static int GetMessageId()
+        {
+            return _editCountdownMessageId;
         }
 
     }

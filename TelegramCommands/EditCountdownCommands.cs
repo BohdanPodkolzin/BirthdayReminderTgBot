@@ -89,6 +89,9 @@ namespace tg.TelegramCommands
         [InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.AllDel)]
         public static async Task Confirm(ITelegramBotClient botClient, Update update)
         {
+            int prevMessage = MenuCommands.GetMessageId();
+            botClient.DeleteMessageAsync(update.CallbackQuery.Message.Chat.Id, prevMessage);
+
             var message = "Confirm clearing all list";
 
             var yesButton = new InlineCallback("Yes", ConfirmationTHeader.Yes);
@@ -102,7 +105,7 @@ namespace tg.TelegramCommands
 
             OptionMessage option = new OptionMessage();
             option.MenuInlineKeyboardMarkup = inlineKeyboard;
-
+            
             await PRTelegramBot.Helpers.Message.Send(botClient, update, message, option);
         }
     }
