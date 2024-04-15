@@ -15,12 +15,9 @@ namespace tg.TelegramCommands
                 User user = update.Message.From;
                 string userNickName = user?.Username ?? "";
 
-                if (userNickName != null)
-                {
-                    string startMessage = $"🖐️ Hey, @{userNickName}!\nTo make your first schedule of bithdays enter /menu";
-                    Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, startMessage);
-                    await InfinityLoop.StartReminderLoop(botClient, update);
-                }
+                string startMessage = $"🖐️ Hey, @{userNickName}!\nTo make your first schedule of bithdays enter /menu";
+                Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, startMessage);
+                await InfinityLoop.StartReminderLoop(botClient, update);
             }
 
         }

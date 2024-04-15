@@ -69,8 +69,8 @@ namespace tg.TelegramCommands
 
             string message = "Editing Schedule";
             Message sendMessage = await PRTelegramBot.Helpers.Message.Send(botClient, update, message, option);
-
-            _editCountdownMessageIds[chatId] = sendMessage.MessageId;
+            
+            SetMessageId(chatId, sendMessage.MessageId);
         }
 
         public static int GetMessageId(long chatId)
@@ -82,6 +82,11 @@ namespace tg.TelegramCommands
                 return messageId;
             }
             return -1;
+        }
+
+        public static void SetMessageId(long chatId, int messageId)
+        {
+            _editCountdownMessageIds[chatId] = messageId;
         }
 
     }

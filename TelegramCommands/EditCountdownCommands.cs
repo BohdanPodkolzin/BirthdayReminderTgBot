@@ -9,6 +9,7 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using tg.Models;
 using tg.UsersCache;
+using Google.Protobuf.WellKnownTypes;
 
 namespace tg.TelegramCommands
 {
@@ -87,26 +88,66 @@ namespace tg.TelegramCommands
         [InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.AllDel)]
         public static async Task Confirm(ITelegramBotClient botClient, Update update)
         {
-            if (update.CallbackQuery != null)
-            {
-                int prevMessageId = MenuCommands.GetMessageId(update.CallbackQuery.Message!.Chat.Id);
-                botClient?.DeleteMessageAsync(update.CallbackQuery.Message.Chat.Id, prevMessageId);
-            }
+            long chatId = update.CallbackQuery.Message.Chat.Id;
+            int prevMessageId = MenuCommands.GetMessageId(chatId);
+            var message = "Confirm removing all Countdowns";
 
-            var message = "Confirm clearing all list";
             var yesButton = new InlineCallback("Yes", ConfirmationTHeader.Yes);
             var noButton = new InlineCallback("No", ConfirmationTHeader.No);
 
             List<IInlineContent> yesOrNo = new List<IInlineContent>();
             yesOrNo.Add(yesButton);
             yesOrNo.Add(noButton);
-
             InlineKeyboardMarkup inlineKeyboard = MenuGenerator.InlineKeyboard(2, yesOrNo);
 
-            OptionMessage option = new OptionMessage();
-            option.MenuInlineKeyboardMarkup = inlineKeyboard;
-            
-            await PRTelegramBot.Helpers.Message.Send(botClient, update, message, option);
+
+
+            var sentMessage = await botClient.EditMessageTextAsync(chatId, prevMessageId, message, replyMarkup: inlineKeyboard);
+            MenuCommands.SetMessageId(chatId, sentMessage.MessageId);
+
         }
+
+
+
+        [InlineCallbackHandler<ConfirmationTHeader>(ConfirmationTHeader.Yes)]
+        public static async Task ClearCache(ITelegramBotClient botClient, Update update)
+        {
+            string message = "Countdowns has been successfully removed!";
+            update.GetCacheData<UserCache>().ClearData();
+
+            long chatId = update.CallbackQuery.Message.Chat.Id;
+            int messageId = update.CallbackQuery.Message.MessageId;
+
+            await botClient.EditMessageTextAsync(
+                chatId,
+                messageId,
+                text: message
+            );
+        }
+
+        [InlineCallbackHandler<ConfirmationTHeader>(ConfirmationTHeader.No)]
+        public static async Task BackToEditCountdown(ITelegramBotClient botClient, Update update)
+        {
+            long chatId = update.CallbackQuery.Message.Chat.Id;
+            int messageId = update.CallbackQuery.Message.MessageId;
+            string message = "Editing Schedule";
+            
+
+
+            var addButton = new InlineCallback("Add Countdown", EditCountdownTHeader.Add);
+            var delButton = new InlineCallback("Delete Countdown", EditCountdownTHeader.Del);
+            var allDelButton = new InlineCallback("Delete All Schedule", EditCountdownTHeader.AllDel);
+
+            List<IInlineContent> menu = new();
+            menu.Add(addButton);
+            menu.Add(delButton);
+            menu.Add(allDelButton);
+
+            InlineKeyboardMarkup editorMenu = MenuGenerator.InlineKeyboard(2, menu);
+
+            await botClient.EditMessageTextAsync(chatId, messageId, message, replyMarkup: editorMenu);
+        }
+
     }
-}
+    
+}       
