@@ -1,30 +1,34 @@
 ﻿using PRTelegramBot.Core;
 
-const string EXIT = "exit";
-
+const string exit = "exit";
 
 var tgBot = new PRBot(option =>
 {
-    option.Token = "TG_BOT_TOKEN";
-    option.Admins = new List<long> { };
-    option.WhiteListUsers = new List<long> { };
-    option.ClearUpdatesOnStart = true;
     option.BotId = 0;
+    option.Admins = [];
+    option.WhiteListUsers = [];
+    option.Token = "TG_BOT_TOKEN";
+    option.ClearUpdatesOnStart = true;
 });
 
-tgBot.OnLogCommon += TgBot_OnLogCommon;
-tgBot.OnLogError += TgBot_OnLogError;
+tgBot.OnLogCommon += TgBotOnLogCommon;
+tgBot.OnLogError += TgBotOnLogError;
 
 await tgBot.Start();
-static void TgBot_OnLogError(Exception ex, long? chatId)
+
+while (true)
 {
-    Console.ForegroundColor = ConsoleColor.Red;
-    var errorMsg = $"{DateTime.Now}:{ex.Message}";
-    Console.WriteLine(errorMsg);
-    Console.ResetColor();
+    var result = Console.ReadLine();
+    if (result?.ToLower() == exit)
+    {
+        Environment.Exit(0);
+    }
 }
 
-static void TgBot_OnLogCommon(string msg, Enum? eventTypes, ConsoleColor color)
+
+return;
+
+static void TgBotOnLogCommon(string msg, Enum? eventTypes, ConsoleColor color)
 {
     Console.ForegroundColor = ConsoleColor.Yellow;
     var commonMsg = $"{DateTime.Now}:{msg}";
@@ -32,11 +36,10 @@ static void TgBot_OnLogCommon(string msg, Enum? eventTypes, ConsoleColor color)
     Console.ResetColor();
 }
 
-while (true)
+static void TgBotOnLogError(Exception ex, long? chatId)
 {
-    var result = Console.ReadLine();
-    if (result?.ToLower() == EXIT)
-    {
-        Environment.Exit(0);
-    }
+    Console.ForegroundColor = ConsoleColor.Red;
+    var errorMsg = $"{DateTime.Now}:{ex.Message}";
+    Console.WriteLine(errorMsg);
+    Console.ResetColor();
 }
