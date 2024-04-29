@@ -8,7 +8,7 @@ const string EXIT = "exit";
 
 var tgBot = new PRBot(option =>
 {
-    option.Token = BotCfg.Token;
+    option.Token = "TG_BOT_TOKEN";
     option.Admins = new List<long> { };
     option.WhiteListUsers = new List<long> { };
     option.ClearUpdatesOnStart = true;
