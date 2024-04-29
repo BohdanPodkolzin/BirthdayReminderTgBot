@@ -18,7 +18,7 @@ namespace BirthdayReminder.Telegram.CommandHandlers
             try
             {
                 var command = InlineCallback.GetCommandByCallbackOrNull(update.CallbackQuery?.Data ?? "");
-                if (command is { } __)
+                if (command is not { } __)
                 {
                     return;
                 }
@@ -52,7 +52,7 @@ namespace BirthdayReminder.Telegram.CommandHandlers
             try
             {
                 var command = InlineCallback.GetCommandByCallbackOrNull(update.CallbackQuery?.Data ?? "");
-                if (command is { } __)
+                if (command is not { } __)
                 {
                     return;
                 }

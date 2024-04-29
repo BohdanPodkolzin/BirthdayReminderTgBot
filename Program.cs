@@ -7,7 +7,7 @@ var tgBot = new PRBot(option =>
     option.BotId = 0;
     option.Admins = [];
     option.WhiteListUsers = [];
-    option.Token = "TG_BOT_TOKEN";
+    option.Token = "6913826173:AAGzagW4oOD5HLuD-lgfHtfPmDksi_hn2_w";
     option.ClearUpdatesOnStart = true;
 });
 
