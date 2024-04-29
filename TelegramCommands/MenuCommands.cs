@@ -1,4 +1,5 @@
 ﻿using BirthdayReminder.Enums;
+using BirthdayReminder.Helpers;
 using PRTelegramBot.Attributes;
 using PRTelegramBot.Extensions;
 using PRTelegramBot.Interface;
@@ -55,19 +56,7 @@ namespace BirthdayReminder.TelegramCommands
                 await botClient.DeleteMessageAsync(chatId, prevMessageId);
             }
 
-            var addButton = new InlineCallback("Add Countdown", EditCountdownTHeader.Add);
-            var deleteButton = new InlineCallback("Delete Countdown", EditCountdownTHeader.Del);
-            var resetButton = new InlineCallback("Delete All Schedule", EditCountdownTHeader.AllDel);
-
-            List<IInlineContent> menu =
-            [
-                addButton,
-                deleteButton,
-                resetButton
-            ];
-
-            var editorMenu = MenuGenerator.InlineKeyboard(2, menu);
-
+            var editorMenu = InlineKeyboardsHelper.MenuKeyboard();
             var option = new OptionMessage
             {
                 MenuInlineKeyboardMarkup = editorMenu

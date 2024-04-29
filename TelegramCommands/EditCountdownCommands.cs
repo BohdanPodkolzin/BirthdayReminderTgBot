@@ -1,4 +1,5 @@
 ﻿using BirthdayReminder.Enums;
+using BirthdayReminder.Helpers;
 using BirthdayReminder.UsersCache;
 using PRTelegramBot.Attributes;
 using PRTelegramBot.Extensions;
@@ -8,6 +9,7 @@ using PRTelegramBot.Models.InlineButtons;
 using PRTelegramBot.Utils;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace BirthdayReminder.TelegramCommands
 {
@@ -85,23 +87,16 @@ namespace BirthdayReminder.TelegramCommands
         [InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.AllDel)]
         public static async Task Confirm(ITelegramBotClient botClient, Update update)
         {
+            const string message = "Confirm removing all Countdowns";
+
             var chatId = update.GetChatId();;
             var prevMessageId = MenuCommands.GetPrevMessageIdInChat(chatId);
-            var message = "Confirm removing all Countdowns";
 
-            var yesButton = new InlineCallback("Yes", ConfirmationTHeader.Yes);
-            var noButton = new InlineCallback("No", ConfirmationTHeader.No);
+            var inlineKeyboard = InlineKeyboardsHelper.ConfirmationKeyboard();
+            var sentMessage = await botClient.EditMessageTextAsync(
+                chatId, prevMessageId, message, replyMarkup: inlineKeyboard);
 
-            List<IInlineContent> yesOrNo = new List<IInlineContent>();
-            yesOrNo.Add(yesButton);
-            yesOrNo.Add(noButton);
-            var inlineKeyboard = MenuGenerator.InlineKeyboard(2, yesOrNo);
-
-
-
-            var sentMessage = await botClient.EditMessageTextAsync(chatId, prevMessageId, message, replyMarkup: inlineKeyboard);
             MenuCommands.SavePrevMessageIdInChat(chatId, sentMessage.MessageId);
-
         }
 
 
@@ -109,11 +104,11 @@ namespace BirthdayReminder.TelegramCommands
         [InlineCallbackHandler<ConfirmationTHeader>(ConfirmationTHeader.Yes)]
         public static async Task ClearCache(ITelegramBotClient botClient, Update update)
         {
-            var message = "Countdowns has been successfully removed!";
+            const string message = "Countdowns has been successfully removed!";
             update.GetCacheData<UserCache>().ClearData();
 
             var chatId = update.GetChatId();
-            var messageId = update.CallbackQuery.Message.MessageId;
+            var messageId = update.GetMessageId();
 
             await botClient.EditMessageTextAsync(
                 chatId,
@@ -125,26 +120,14 @@ namespace BirthdayReminder.TelegramCommands
         [InlineCallbackHandler<ConfirmationTHeader>(ConfirmationTHeader.No)]
         public static async Task BackToEditCountdown(ITelegramBotClient botClient, Update update)
         {
+            const string message = "Editing Schedule";
+
             var chatId = update.GetChatId();
-            var messageId = update.CallbackQuery.Message.MessageId;
-            var message = "Editing Schedule";
-            
+            var messageId = update.GetMessageId();
 
-
-            var addButton = new InlineCallback("Add Countdown", EditCountdownTHeader.Add);
-            var delButton = new InlineCallback("Delete Countdown", EditCountdownTHeader.Del);
-            var allDelButton = new InlineCallback("Delete All Schedule", EditCountdownTHeader.AllDel);
-
-            List<IInlineContent> menu = new();
-            menu.Add(addButton);
-            menu.Add(delButton);
-            menu.Add(allDelButton);
-
-            var editorMenu = MenuGenerator.InlineKeyboard(2, menu);
+            var editorMenu = InlineKeyboardsHelper.MenuKeyboard();
 
             await botClient.EditMessageTextAsync(chatId, messageId, message, replyMarkup: editorMenu);
         }
-
     }
-    
 }       
