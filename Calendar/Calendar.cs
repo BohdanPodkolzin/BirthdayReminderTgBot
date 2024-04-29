@@ -21,6 +21,8 @@ namespace BirthdayReminder.Calendar
             await PRTelegramBot.Helpers.Message.Send(botClient, update.GetChatId(), message, option);
         }
 
+        #region User Choice Handlers
+
         [InlineCallbackHandler<THeader>(THeader.YearMonthPicker)]
         public static async Task PickYearMonth(ITelegramBotClient botClient, Update update)
             => await PickBase(botClient, update, THeader.YearMonthPicker, GetKeyboard);
@@ -36,6 +38,40 @@ namespace BirthdayReminder.Calendar
         [InlineCallbackHandler<THeader>(THeader.ChangeTo)]
         public static async Task ChangeToHandler(ITelegramBotClient botClient, Update update)
             => await PickBase(botClient, update, THeader.ChangeTo, GetKeyboard);
+
+        [InlineCallbackHandler<THeader>(THeader.PickDate)]
+        public static async Task PickDate(ITelegramBotClient botClient, Update update)
+        {
+            if (update.CallbackQuery?.Data is null)
+            {
+                return;
+            }
+
+            try
+            {
+                var command = InlineCallback<CalendarTCommand>.GetCommandByCallbackOrNull(update.CallbackQuery.Data);
+                if (command is not { } __)
+                {
+                    return;
+                }
+
+                var data = command.Data.Date;
+
+                var message = $"Picked date: <b>{data:dd.MM.yyyy}</b>";
+                await PRTelegramBot.Helpers.Message.Edit(botClient, update, message);
+
+                //caching date
+                var cache = update.GetCacheData<UserCache>();
+                cache.DateT = data;
+                CacheCommand.UpdateCache(update, cache.PersonName ?? "unknown", cache.DateT);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+
+        #endregion
 
         private static async Task PickBase(
             ITelegramBotClient botClient, Update update, THeader header,
@@ -77,38 +113,6 @@ namespace BirthdayReminder.Calendar
                 THeader.YearMonthPicker => InlineKeyboardsHelper.Calendar.PickMonthYear(command).AsOption(),
                 _ => throw new ArgumentOutOfRangeException(nameof(header), header, null)
             };
-        }
-
-        [InlineCallbackHandler<THeader>(THeader.PickDate)]
-        public static async Task PickDate(ITelegramBotClient botClient, Update update)
-        {
-            if (update.CallbackQuery?.Data is null)
-            {
-                return;
-            }
-
-            try
-            {
-                var command = InlineCallback<CalendarTCommand>.GetCommandByCallbackOrNull(update.CallbackQuery.Data);
-                if (command is not { } __)
-                {
-                    return;
-                }
-
-                var data = command.Data.Date;
-
-                var message = $"Picked date: <b>{data:dd.MM.yyyy}</b>";
-                await PRTelegramBot.Helpers.Message.Edit(botClient, update, message);
-
-                //caching date
-                var cache = update.GetCacheData<UserCache>();
-                cache.DateT = data;
-                CacheCommand.UpdateCache(update, cache.PersonName ?? "unknown", cache.DateT);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
         }
     }
 }
