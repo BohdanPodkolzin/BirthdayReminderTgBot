@@ -1,12 +1,10 @@
-﻿using PRTelegramBot.Attributes;
+﻿using System.Text;
+using PRTelegramBot.Attributes;
 using PRTelegramBot.Extensions;
-using System.Text;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using tg.Models;
 
-
-namespace tg.UsersCache
+namespace BirthdayReminder.UsersCache
 {
     public class CacheCommand
     {

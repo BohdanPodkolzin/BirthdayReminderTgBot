@@ -1,17 +1,17 @@
-﻿using Telegram.Bot;
-using Telegram.Bot.Types;
+﻿using System.Globalization;
+using BirthdayReminder.Models;
+using BirthdayReminder.UsersCache;
 using PRTelegramBot.Attributes;
-using PRTelegramBot.Utils.Controls.CalendarControl.Common;
 using PRTelegramBot.Extensions;
-using System.Globalization;
-using THeader = PRTelegramBot.Models.Enums.THeader;
-using PRTelegramBot.Models.InlineButtons;
 using PRTelegramBot.Models;
 using PRTelegramBot.Models.CallbackCommands;
-using tg.Models;
-using tg.UsersCache;
+using PRTelegramBot.Models.InlineButtons;
+using PRTelegramBot.Utils.Controls.CalendarControl.Common;
+using Telegram.Bot;
+using Telegram.Bot.Types;
+using THeader = PRTelegramBot.Models.Enums.THeader;
 
-namespace tg
+namespace BirthdayReminder.Calendar
 {
     public class Calendar
     {

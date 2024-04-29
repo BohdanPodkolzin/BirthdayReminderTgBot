@@ -1,12 +1,7 @@
-﻿using PRTelegramBot.Attributes;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
+using PRTelegramBot.Attributes;
 
-namespace tg.Models
+namespace BirthdayReminder.Models
 {
     [InlineCommand]
     public enum ConfirmationTHeader

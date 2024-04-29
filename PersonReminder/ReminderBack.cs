@@ -1,9 +1,9 @@
-﻿using PRTelegramBot.Extensions;
+﻿using BirthdayReminder.UsersCache;
+using PRTelegramBot.Extensions;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using tg.UsersCache;
 
-namespace tg.PersonReminder
+namespace BirthdayReminder.PersonReminder
 {
     public class ReminderBack
     {

@@ -1,17 +1,16 @@
-﻿using PRTelegramBot.Attributes;
+﻿using BirthdayReminder.Models;
+using BirthdayReminder.UsersCache;
+using PRTelegramBot.Attributes;
 using PRTelegramBot.Extensions;
 using PRTelegramBot.Interface;
-using PRTelegramBot.Models.InlineButtons;
 using PRTelegramBot.Models;
+using PRTelegramBot.Models.InlineButtons;
 using PRTelegramBot.Utils;
-using Telegram.Bot.Types.ReplyMarkups;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using tg.Models;
-using tg.UsersCache;
-using Google.Protobuf.WellKnownTypes;
+using Telegram.Bot.Types.ReplyMarkups;
 
-namespace tg.TelegramCommands
+namespace BirthdayReminder.TelegramCommands
 {
     public class EditCountdownCommands
     {
@@ -40,7 +39,7 @@ namespace tg.TelegramCommands
             string message = $"Entered name <b>{update.Message?.Text}</b>";
             Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
 
-            await Calendar.PickCalendar(botClient, update);
+            await Calendar.Calendar.PickCalendar(botClient, update);
 
             var cache = update.GetCacheData<UserCache>();
             cache.PersonName = update.Message?.Text;

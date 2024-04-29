@@ -1,9 +1,9 @@
-﻿using PRTelegramBot.Attributes;
-using Telegram.Bot.Types;
+﻿using BirthdayReminder.PersonReminder;
+using PRTelegramBot.Attributes;
 using Telegram.Bot;
-using tg.PersonReminder;
+using Telegram.Bot.Types;
 
-namespace tg.TelegramCommands
+namespace BirthdayReminder.TelegramCommands
 {
     public static class StartBotCommand
     {

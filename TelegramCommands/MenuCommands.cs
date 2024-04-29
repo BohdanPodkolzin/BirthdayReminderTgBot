@@ -1,14 +1,14 @@
-﻿using PRTelegramBot.Attributes;
+﻿using BirthdayReminder.Models;
+using PRTelegramBot.Attributes;
+using PRTelegramBot.Interface;
 using PRTelegramBot.Models;
 using PRTelegramBot.Models.InlineButtons;
 using PRTelegramBot.Utils;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
-using PRTelegramBot.Interface;
-using tg.Models;
 
-namespace tg.TelegramCommands
+namespace BirthdayReminder.TelegramCommands
 {
 
     public class MenuCommands

@@ -1,7 +1,6 @@
-﻿using PRTelegramBot.Models;
-using PRTelegramBot.Interface;
+﻿using PRTelegramBot.Interface;
 
-namespace tg.UsersCache
+namespace BirthdayReminder.UsersCache
 {
     public class UserCache : ITelegramCache
     {
