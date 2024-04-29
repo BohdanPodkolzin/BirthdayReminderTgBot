@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using BirthdayReminder.Telegram.Models;
 using PRTelegramBot.Attributes;
 using PRTelegramBot.Extensions;
 using Telegram.Bot;

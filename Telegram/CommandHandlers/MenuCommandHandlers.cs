@@ -9,7 +9,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace BirthdayReminder.Telegram.CommandHandlers
 {
-    public static class MenuCommands
+    public static class MenuCommandHandlers
     {
         private static readonly Dictionary<long, int> EditCountdownMessageIds = new();
 
@@ -53,7 +53,7 @@ namespace BirthdayReminder.Telegram.CommandHandlers
                 await botClient.DeleteMessageAsync(chatId, prevMessageId);
             }
 
-            var editorMenu = InlineKeyboardsHelper.MenuKeyboard();
+            var editorMenu = InlineKeyboardsHelper.CountdownMenuKeyboard();
             var option = new OptionMessage
             {
                 MenuInlineKeyboardMarkup = editorMenu

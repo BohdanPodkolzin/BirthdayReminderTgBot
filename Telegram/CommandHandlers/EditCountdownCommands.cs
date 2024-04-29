@@ -1,5 +1,6 @@
 ﻿using BirthdayReminder.Telegram.Helpers;
 using BirthdayReminder.Telegram.InlineCommands;
+using BirthdayReminder.Telegram.Models;
 using PRTelegramBot.Attributes;
 using PRTelegramBot.Extensions;
 using PRTelegramBot.Models;
@@ -36,7 +37,7 @@ namespace BirthdayReminder.Telegram.CommandHandlers
             var message = $"Entered name <b>{update.Message?.Text}</b>";
             _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
 
-            await Calendar.PickCalendar(botClient, update);
+            await CalendarCommandHandlers.PickCalendar(botClient, update);
 
             var cache = update.GetCacheData<UserCache>();
             cache.PersonName = update.Message?.Text;
@@ -86,13 +87,13 @@ namespace BirthdayReminder.Telegram.CommandHandlers
             const string message = "Confirm removing all Countdowns";
 
             var chatId = update.GetChatId();;
-            var prevMessageId = MenuCommands.GetPrevMessageIdInChat(chatId);
+            var prevMessageId = MenuCommandHandlers.GetPrevMessageIdInChat(chatId);
 
             var inlineKeyboard = InlineKeyboardsHelper.ConfirmationKeyboard();
             var sentMessage = await botClient.EditMessageTextAsync(
                 chatId, prevMessageId, message, replyMarkup: inlineKeyboard);
 
-            MenuCommands.SavePrevMessageIdInChat(chatId, sentMessage.MessageId);
+            MenuCommandHandlers.SavePrevMessageIdInChat(chatId, sentMessage.MessageId);
         }
 
 
@@ -121,7 +122,7 @@ namespace BirthdayReminder.Telegram.CommandHandlers
             var chatId = update.GetChatId();
             var messageId = update.GetMessageId();
 
-            var editorMenu = InlineKeyboardsHelper.MenuKeyboard();
+            var editorMenu = InlineKeyboardsHelper.CountdownMenuKeyboard();
 
             await botClient.EditMessageTextAsync(chatId, messageId, message, replyMarkup: editorMenu);
         }

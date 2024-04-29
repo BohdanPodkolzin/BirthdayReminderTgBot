@@ -5,7 +5,7 @@ using Telegram.Bot.Types;
 
 namespace BirthdayReminder.Telegram.CommandHandlers
 {
-    public static class StartBotCommand
+    public static class StartBotCommandHandler
     {
         [ReplyMenuHandler("/start")]
         public static async Task StartBotMethod(ITelegramBotClient botClient, Update update)

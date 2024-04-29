@@ -1,13 +1,13 @@
 ﻿using BirthdayReminder.Telegram.CommandHandlers;
+using BirthdayReminder.Telegram.Models;
 using PRTelegramBot.Extensions;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
 namespace BirthdayReminder.PersonReminder
 {
-    public class ReminderBack
+    public static class ReminderBack
     {
-
         public static async Task RemindPersonForBirthday(ITelegramBotClient botClient, Update update)
         {
             var currDate = DateTime.Today;

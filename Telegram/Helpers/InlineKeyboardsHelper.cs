@@ -25,7 +25,7 @@ public static class InlineKeyboardsHelper
         return MenuGenerator.InlineKeyboard(2, yesOrNo);
     }
 
-    public static InlineKeyboardMarkup MenuKeyboard()
+    public static InlineKeyboardMarkup CountdownMenuKeyboard()
     {
         var addButton = new InlineCallback("Add Countdown", CountdownInlineCommandTHeader.Add);
         var delButton = new InlineCallback("Delete Countdown", CountdownInlineCommandTHeader.Del);

@@ -1,6 +1,6 @@
 ﻿using PRTelegramBot.Interface;
 
-namespace BirthdayReminder.Telegram.CommandHandlers
+namespace BirthdayReminder.Telegram.Models
 {
     public class UserCache : ITelegramCache
     {
