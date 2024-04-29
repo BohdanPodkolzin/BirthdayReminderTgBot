@@ -15,32 +15,34 @@ namespace BirthdayReminder.Calendar
 {
     public class Calendar
     {
-
-        public static DateTimeFormatInfo dtfi = CultureInfo.GetCultureInfo("en-GB", false).DateTimeFormat;
-
+        private static readonly DateTimeFormatInfo DateTimeFormat =
+            CultureInfo.GetCultureInfo("en-GB", false).DateTimeFormat;
 
         public static async Task PickCalendar(ITelegramBotClient botClient, Update update)
         {
-            var calendarMarkup = Markup.Calendar(DateTime.Now, dtfi); // dtfi is DateTimeFormatInfo
-            var option = new OptionMessage();
-            option.MenuInlineKeyboardMarkup = calendarMarkup;
+            var calendarMarkup = Markup.Calendar(DateTime.Now, DateTimeFormat);
+            var option = new OptionMessage
+            {
+                MenuInlineKeyboardMarkup = calendarMarkup
+            };
 
-            Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update.GetChatId(), "<b>Pick a date</b>", option);
+            var _ = await PRTelegramBot.Helpers.Message.Send(botClient, update.GetChatId(), "<b>Pick a date</b>", option);
         }
 
-
         [InlineCallbackHandler<THeader>(THeader.YearMonthPicker)]
-        public static async Task PickYeadMonth(ITelegramBotClient botClient, Update update)
+        public static async Task PickYearMonth(ITelegramBotClient botClient, Update update)
         {
             try
             {
                 var command = InlineCallback<CalendarTCommand>.GetCommandByCallbackOrNull(update.CallbackQuery?.Data);
                 if (command != null)
                 {
-                    var monthYearMarkup = Markup.PickMonthYear(command.Data.Date, dtfi, command.Data.LastCommand);
-                    var option = new OptionMessage();
-                    option.MenuInlineKeyboardMarkup = monthYearMarkup;
-                    Message _ = await PRTelegramBot.Helpers.Message.EditInline(botClient, update.CallbackQuery.Message.Chat.Id, update.CallbackQuery.Message.MessageId, option);
+                    var monthYearMarkup = Markup.PickMonthYear(command.Data.Date, DateTimeFormat, command.Data.LastCommand);
+                    var option = new OptionMessage
+                    {
+                        MenuInlineKeyboardMarkup = monthYearMarkup
+                    };
+                    var _ = await PRTelegramBot.Helpers.Message.EditInline(botClient, update.CallbackQuery.Message.Chat.Id, update.CallbackQuery.Message.MessageId, option);
                 }
 
             }
@@ -59,10 +61,12 @@ namespace BirthdayReminder.Calendar
                 var command = InlineCallback<CalendarTCommand>.GetCommandByCallbackOrNull(update.CallbackQuery?.Data);
                 if (command != null)
                 {
-                    var monthPickerMarkup = Markup.PickMonth(command.Data.Date, dtfi, command.Data.LastCommand);
-                    var Option = new OptionMessage();
-                    Option.MenuInlineKeyboardMarkup = monthPickerMarkup;
-                    Message _ = await PRTelegramBot.Helpers.Message.EditInline(botClient, update.CallbackQuery.Message.Chat.Id, update.CallbackQuery.Message.MessageId, Option);
+                    var monthPickerMarkup = Markup.PickMonth(command.Data.Date, DateTimeFormat, command.Data.LastCommand);
+                    var option = new OptionMessage
+                    {
+                        MenuInlineKeyboardMarkup = monthPickerMarkup
+                    };
+                    var _ = await PRTelegramBot.Helpers.Message.EditInline(botClient, update.CallbackQuery.Message.Chat.Id, update.CallbackQuery.Message.MessageId, option);
 
                 }
             }
@@ -80,10 +84,12 @@ namespace BirthdayReminder.Calendar
                 var command = InlineCallback<CalendarTCommand>.GetCommandByCallbackOrNull(update.CallbackQuery?.Data);
                 if (command != null)
                 {
-                    var yearPickerMarkup = Markup.PickYear(command.Data.Date, dtfi, command.Data.LastCommand);
-                    var Option = new OptionMessage();
-                    Option.MenuInlineKeyboardMarkup = yearPickerMarkup;
-                    Message _ = await PRTelegramBot.Helpers.Message.EditInline(botClient, update.CallbackQuery.Message.Chat.Id, update.CallbackQuery.Message.MessageId, Option);
+                    var yearPickerMarkup = Markup.PickYear(command.Data.Date, DateTimeFormat, command.Data.LastCommand);
+                    var option = new OptionMessage
+                    {
+                        MenuInlineKeyboardMarkup = yearPickerMarkup
+                    };
+                    var _ = await PRTelegramBot.Helpers.Message.EditInline(botClient, update.CallbackQuery.Message.Chat.Id, update.CallbackQuery.Message.MessageId, option);
                 }
             }
             catch (Exception ex)
@@ -91,7 +97,6 @@ namespace BirthdayReminder.Calendar
                 Console.WriteLine(ex);
             }
         }
-
 
         [InlineCallbackHandler<THeader>(THeader.ChangeTo)]
         public static async Task ChangeToHandler(ITelegramBotClient botClient, Update update)
@@ -101,10 +106,12 @@ namespace BirthdayReminder.Calendar
                 var command = InlineCallback<CalendarTCommand>.GetCommandByCallbackOrNull(update.CallbackQuery?.Data);
                 if (command != null)
                 {
-                    var calendarMarkup = Markup.Calendar(command.Data.Date, dtfi);
-                    var option = new OptionMessage();
-                    option.MenuInlineKeyboardMarkup = calendarMarkup;
-                    Message _ = await PRTelegramBot.Helpers.Message.EditInline(botClient, update.CallbackQuery.Message.Chat.Id, update.CallbackQuery.Message.MessageId, option);
+                    var calendarMarkup = Markup.Calendar(command.Data.Date, DateTimeFormat);
+                    var option = new OptionMessage
+                    {
+                        MenuInlineKeyboardMarkup = calendarMarkup
+                    };
+                    var _ = await PRTelegramBot.Helpers.Message.EditInline(botClient, update.CallbackQuery.Message.Chat.Id, update.CallbackQuery.Message.MessageId, option);
                 }
             }
             catch (Exception ex)
@@ -113,7 +120,6 @@ namespace BirthdayReminder.Calendar
             }
 
         }
-
 
         [InlineCallbackHandler<THeader>(THeader.PickDate)]
         public static async Task PickDate(ITelegramBotClient botClient, Update update)
@@ -126,8 +132,8 @@ namespace BirthdayReminder.Calendar
                     var type = command.Data.GetLastCommandEnum<EditCountdownTHeader>();
                     var data = command.Data.Date;
 
-                    string message = $"Picked date: <b>{data.ToString("dd.MM.yyyy")}</b>";
-                    Message showDate = await PRTelegramBot.Helpers.Message.Edit(botClient, update, message);
+                    var message = $"Picked date: <b>{data:dd.MM.yyyy}</b>";
+                    var showDate = await PRTelegramBot.Helpers.Message.Edit(botClient, update, message);
 
 
                     //caching date
@@ -140,11 +146,6 @@ namespace BirthdayReminder.Calendar
             {
                 Console.WriteLine(ex);
             }
-
         }
-
-
-
-
     }
 }
