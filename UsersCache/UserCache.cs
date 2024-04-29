@@ -4,7 +4,7 @@ namespace BirthdayReminder.UsersCache
 {
     public class UserCache : ITelegramCache
     {
-        public Dictionary<string, DateTime> scheduleDict = new Dictionary<string, DateTime>();
+        public Dictionary<string, DateTime> scheduleDict = new();
         public string? PersonName { get; set; }
         public DateTime DateT { get; set; }
 

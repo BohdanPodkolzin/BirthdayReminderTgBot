@@ -1,6 +1,4 @@
-﻿using System;
-using PRTelegramBot;
-using PRTelegramBot.Core;
+﻿using PRTelegramBot.Core;
 
 const string EXIT = "exit";
 

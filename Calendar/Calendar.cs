@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using BirthdayReminder.Enums;
 using BirthdayReminder.UsersCache;
 using PRTelegramBot.Attributes;
 using PRTelegramBot.Extensions;
@@ -13,7 +12,7 @@ using THeader = PRTelegramBot.Models.Enums.THeader;
 
 namespace BirthdayReminder.Calendar
 {
-    public class Calendar
+    public static class Calendar
     {
         private static readonly DateTimeFormatInfo DateTimeFormat =
             CultureInfo.GetCultureInfo("en-GB", false).DateTimeFormat;
@@ -26,7 +25,7 @@ namespace BirthdayReminder.Calendar
                 MenuInlineKeyboardMarkup = calendarMarkup
             };
 
-            var _ = await PRTelegramBot.Helpers.Message.Send(botClient, update.GetChatId(), "<b>Pick a date</b>", option);
+            _ = await PRTelegramBot.Helpers.Message.Send(botClient, update.GetChatId(), "<b>Pick a date</b>", option);
         }
 
         [InlineCallbackHandler<THeader>(THeader.YearMonthPicker)]
@@ -37,20 +36,20 @@ namespace BirthdayReminder.Calendar
                 var command = InlineCallback<CalendarTCommand>.GetCommandByCallbackOrNull(update.CallbackQuery?.Data);
                 if (command != null)
                 {
-                    var monthYearMarkup = Markup.PickMonthYear(command.Data.Date, DateTimeFormat, command.Data.LastCommand);
+                    var monthYearMarkup =
+                        Markup.PickMonthYear(command.Data.Date, DateTimeFormat, command.Data.LastCommand);
                     var option = new OptionMessage
                     {
                         MenuInlineKeyboardMarkup = monthYearMarkup
                     };
-                    var _ = await PRTelegramBot.Helpers.Message.EditInline(botClient, update.CallbackQuery.Message.Chat.Id, update.CallbackQuery.Message.MessageId, option);
+                    _ = await PRTelegramBot.Helpers.Message.EditInline(botClient, update.CallbackQuery.Message.Chat.Id,
+                        update.CallbackQuery.Message.MessageId, option);
                 }
-
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
             }
-
         }
 
         [InlineCallbackHandler<THeader>(THeader.PickMonth)]
@@ -61,13 +60,14 @@ namespace BirthdayReminder.Calendar
                 var command = InlineCallback<CalendarTCommand>.GetCommandByCallbackOrNull(update.CallbackQuery?.Data);
                 if (command != null)
                 {
-                    var monthPickerMarkup = Markup.PickMonth(command.Data.Date, DateTimeFormat, command.Data.LastCommand);
+                    var monthPickerMarkup =
+                        Markup.PickMonth(command.Data.Date, DateTimeFormat, command.Data.LastCommand);
                     var option = new OptionMessage
                     {
                         MenuInlineKeyboardMarkup = monthPickerMarkup
                     };
-                    var _ = await PRTelegramBot.Helpers.Message.EditInline(botClient, update.CallbackQuery.Message.Chat.Id, update.CallbackQuery.Message.MessageId, option);
-
+                    _ = await PRTelegramBot.Helpers.Message.EditInline(botClient, update.CallbackQuery.Message.Chat.Id,
+                        update.CallbackQuery.Message.MessageId, option);
                 }
             }
             catch (Exception ex)
@@ -89,7 +89,8 @@ namespace BirthdayReminder.Calendar
                     {
                         MenuInlineKeyboardMarkup = yearPickerMarkup
                     };
-                    var _ = await PRTelegramBot.Helpers.Message.EditInline(botClient, update.CallbackQuery.Message.Chat.Id, update.CallbackQuery.Message.MessageId, option);
+                    _ = await PRTelegramBot.Helpers.Message.EditInline(botClient, update.CallbackQuery.Message.Chat.Id,
+                        update.CallbackQuery.Message.MessageId, option);
                 }
             }
             catch (Exception ex)
@@ -101,9 +102,15 @@ namespace BirthdayReminder.Calendar
         [InlineCallbackHandler<THeader>(THeader.ChangeTo)]
         public static async Task ChangeToHandler(ITelegramBotClient botClient, Update update)
         {
+            if (update.CallbackQuery?.Message is null ||
+                update.CallbackQuery.Data is null)
+            {
+                return;
+            }
+
             try
             {
-                var command = InlineCallback<CalendarTCommand>.GetCommandByCallbackOrNull(update.CallbackQuery?.Data);
+                var command = InlineCallback<CalendarTCommand>.GetCommandByCallbackOrNull(update.CallbackQuery.Data);
                 if (command != null)
                 {
                     var calendarMarkup = Markup.Calendar(command.Data.Date, DateTimeFormat);
@@ -111,14 +118,14 @@ namespace BirthdayReminder.Calendar
                     {
                         MenuInlineKeyboardMarkup = calendarMarkup
                     };
-                    var _ = await PRTelegramBot.Helpers.Message.EditInline(botClient, update.CallbackQuery.Message.Chat.Id, update.CallbackQuery.Message.MessageId, option);
+                    await PRTelegramBot.Helpers.Message.EditInline(botClient, update.CallbackQuery.Message.Chat.Id,
+                        update.CallbackQuery.Message.MessageId, option);
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
             }
-
         }
 
         [InlineCallbackHandler<THeader>(THeader.PickDate)]
@@ -129,17 +136,15 @@ namespace BirthdayReminder.Calendar
                 var command = InlineCallback<CalendarTCommand>.GetCommandByCallbackOrNull(update.CallbackQuery?.Data);
                 if (command != null)
                 {
-                    var type = command.Data.GetLastCommandEnum<EditCountdownTHeader>();
                     var data = command.Data.Date;
 
                     var message = $"Picked date: <b>{data:dd.MM.yyyy}</b>";
-                    var showDate = await PRTelegramBot.Helpers.Message.Edit(botClient, update, message);
-
+                    await PRTelegramBot.Helpers.Message.Edit(botClient, update, message);
 
                     //caching date
                     var cache = update.GetCacheData<UserCache>();
                     cache.DateT = data;
-                    await CacheCommand.UpdateCache(update, cache.PersonName ?? "unknown", cache.DateT);
+                    CacheCommand.UpdateCache(update, cache.PersonName ?? "unknown", cache.DateT);
                 }
             }
             catch (Exception ex)

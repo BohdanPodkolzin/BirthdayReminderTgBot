@@ -8,7 +8,6 @@ using PRTelegramBot.Models.InlineButtons;
 using PRTelegramBot.Utils;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.ReplyMarkups;
 
 namespace BirthdayReminder.TelegramCommands
 {
@@ -23,7 +22,7 @@ namespace BirthdayReminder.TelegramCommands
                 if (command != null)
                 {
                     var message = $"Enter the name of the person";
-                    var _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+                    _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
                     update.RegisterStepHandler(new StepTelegram(AddStepTwo, new UserCache()));
 
                 }
@@ -37,7 +36,7 @@ namespace BirthdayReminder.TelegramCommands
         public static async Task AddStepTwo(ITelegramBotClient botClient, Update update)
         {
             var message = $"Entered name <b>{update.Message?.Text}</b>";
-            var _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+            _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
 
             await Calendar.Calendar.PickCalendar(botClient, update);
 
@@ -55,7 +54,7 @@ namespace BirthdayReminder.TelegramCommands
                 if (command != null)
                 {
                     var message = "Specify the name you want to remove from the list:";
-                    var _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+                    _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
                     update.RegisterStepHandler(new StepTelegram(StepTwoDate, new UserCache()));
                 }
             }
@@ -80,15 +79,14 @@ namespace BirthdayReminder.TelegramCommands
                 }
             }
 
-            var _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+            _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
         }
-
 
         [InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.AllDel)]
         public static async Task Confirm(ITelegramBotClient botClient, Update update)
         {
             var chatId = update.CallbackQuery.Message.Chat.Id;
-            var prevMessageId = MenuCommands.GetMessageId(chatId);
+            var prevMessageId = MenuCommands.GetPrevMessageIdInChat(chatId);
             var message = "Confirm removing all Countdowns";
 
             var yesButton = new InlineCallback("Yes", ConfirmationTHeader.Yes);
@@ -102,7 +100,7 @@ namespace BirthdayReminder.TelegramCommands
 
 
             var sentMessage = await botClient.EditMessageTextAsync(chatId, prevMessageId, message, replyMarkup: inlineKeyboard);
-            MenuCommands.SetMessageId(chatId, sentMessage.MessageId);
+            MenuCommands.SetPrevMessageIdInChat(chatId, sentMessage.MessageId);
 
         }
 

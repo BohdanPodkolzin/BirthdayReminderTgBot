@@ -28,22 +28,14 @@ namespace BirthdayReminder.UsersCache
                 message.Append("<b>Your schedule is empty</b>.");
             }
 
-            var _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message.ToString());
+            await PRTelegramBot.Helpers.Message.Send(botClient, update, message.ToString());
         }
 
 
-        public static async Task UpdateCache(Update update, string name, DateTime date)
+        public static void UpdateCache(Update update, string name, DateTime date)
         {
             var cache = update.GetCacheData<UserCache>();
-
-            if (!cache.scheduleDict.ContainsKey(name))
-            {
-                cache.scheduleDict.Add(name, date);
-            }
-            else
-            {
-                cache.scheduleDict[name] = date;
-            }
+            cache.scheduleDict[name] = date;
         }
 
         private static int GetDaysUntilBirthday(DateTime birthday)

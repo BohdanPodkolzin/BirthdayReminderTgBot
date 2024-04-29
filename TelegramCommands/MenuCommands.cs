@@ -10,84 +10,78 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace BirthdayReminder.TelegramCommands
 {
-
-    public class MenuCommands
+    public static class MenuCommands
     {
-        private static Dictionary<long, int> _editCountdownMessageIds = new Dictionary<long, int>();
+        private static readonly Dictionary<long, int> EditCountdownMessageIds = new();
 
         [ReplyMenuHandler("/menu")]
         public static async Task Menu(ITelegramBotClient botClient, Update update)
         {
-            var menuMessage = $"Homepage🏡";
+            const string menuMessage = "Homepage🏡";
 
-            List<KeyboardButton> menuList = new List<KeyboardButton>();
-            menuList.Add(new KeyboardButton("About"));
-            menuList.Add(new KeyboardButton("Edit Countdown"));
-            menuList.Add(new KeyboardButton("Show countdown"));
+            List<KeyboardButton> menuList =
+            [
+                new KeyboardButton("About"),
+                new KeyboardButton("Edit Countdown"),
+                new KeyboardButton("Show countdown")
+            ];
 
             var menu = MenuGenerator.ReplyKeyboard(2, menuList);
-            var option = new OptionMessage();
-            option.MenuReplyKeyboardMarkup = menu;
+            var option = new OptionMessage
+            {
+                MenuReplyKeyboardMarkup = menu
+            };
 
-            var showMenu = await PRTelegramBot.Helpers.Message.Send(botClient, update, menuMessage, option);
-
+            await PRTelegramBot.Helpers.Message.Send(botClient, update, menuMessage, option);
         }
 
         [ReplyMenuHandler("About")]
         public static async Task About(ITelegramBotClient botClient, Update update)
         {
-            var message = $"This bot was created by @szymptom like first project.\nThis creation is aimed at helping with the schedule of the day of births";
-            var _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+            const string message = "This bot was created by @szymptom like first project.\n" +
+                                   "This creation is aimed at helping with the schedule of the day of births";
+            await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
         }
-
-
 
         [ReplyMenuHandler("Edit Countdown")]
         public static async Task EditCountdown(ITelegramBotClient botClient, Update update)
         {
             var chatId = update.Message.Chat.Id;
-            var prevMessageId = GetMessageId(chatId);
 
+            var prevMessageId = GetPrevMessageIdInChat(chatId);
             if (prevMessageId != -1)
             {
                 await botClient.DeleteMessageAsync(chatId, prevMessageId);
             }
 
             var addButton = new InlineCallback("Add Countdown", EditCountdownTHeader.Add);
-            var delButton = new InlineCallback("Delete Countdown", EditCountdownTHeader.Del);
-            var allDelButton = new InlineCallback("Delete All Schedule", EditCountdownTHeader.AllDel);
+            var deleteButton = new InlineCallback("Delete Countdown", EditCountdownTHeader.Del);
+            var resetButton = new InlineCallback("Delete All Schedule", EditCountdownTHeader.AllDel);
 
-            List<IInlineContent> menu = new();
-            menu.Add(addButton);
-            menu.Add(delButton);
-            menu.Add(allDelButton);
+            List<IInlineContent> menu =
+            [
+                addButton,
+                deleteButton,
+                resetButton
+            ];
 
             var editorMenu = MenuGenerator.InlineKeyboard(2, menu);
 
-            var option = new OptionMessage();
-            option.MenuInlineKeyboardMarkup = editorMenu;
+            var option = new OptionMessage
+            {
+                MenuInlineKeyboardMarkup = editorMenu
+            };
 
-            var message = "Editing Schedule";
+            const string message = "Editing Schedule";
             var sendMessage = await PRTelegramBot.Helpers.Message.Send(botClient, update, message, option);
             
-            SetMessageId(chatId, sendMessage.MessageId);
+            SetPrevMessageIdInChat(chatId, sendMessage.MessageId);
         }
 
-        public static int GetMessageId(long chatId)
-        {
-            if (_editCountdownMessageIds.ContainsKey(chatId))
-            {
-                var messageId = _editCountdownMessageIds[chatId];
-                _editCountdownMessageIds.Remove(chatId);
-                return messageId;
-            }
-            return -1;
-        }
+        public static int GetPrevMessageIdInChat(long chatId)
+            => EditCountdownMessageIds.Remove(chatId, out var value) ? value : -1;
 
-        public static void SetMessageId(long chatId, int messageId)
-        {
-            _editCountdownMessageIds[chatId] = messageId;
-        }
-
+        public static void SetPrevMessageIdInChat(long chatId, int messageId)
+            => EditCountdownMessageIds[chatId] = messageId;
     }
 }

@@ -18,12 +18,12 @@ namespace BirthdayReminder.PersonReminder
                 if (user.Value.Month.Equals(currDate.Month) && user.Value.Day.Equals(currDate.Day))
                 {
                     var message = $"Today is {user.Key}'s birthday!";
-                    var _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+                    _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
                 }
                 else if (user.Value.Month.Equals(currDate.Month) && user.Value.Day.Equals(currDate.Day + 1))
                 {
                     var message = $"{user.Key}'s birthday is tomorrow!";
-                    var _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+                    _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
                 }
             }
         }
