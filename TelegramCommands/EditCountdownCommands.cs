@@ -22,8 +22,8 @@ namespace BirthdayReminder.TelegramCommands
                 var command = InlineCallback.GetCommandByCallbackOrNull(update.CallbackQuery?.Data ?? "");
                 if (command != null)
                 {
-                    string message = $"Enter the name of the person";
-                    Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+                    var message = $"Enter the name of the person";
+                    var _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
                     update.RegisterStepHandler(new StepTelegram(AddStepTwo, new UserCache()));
 
                 }
@@ -36,8 +36,8 @@ namespace BirthdayReminder.TelegramCommands
 
         public static async Task AddStepTwo(ITelegramBotClient botClient, Update update)
         {
-            string message = $"Entered name <b>{update.Message?.Text}</b>";
-            Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+            var message = $"Entered name <b>{update.Message?.Text}</b>";
+            var _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
 
             await Calendar.Calendar.PickCalendar(botClient, update);
 
@@ -54,8 +54,8 @@ namespace BirthdayReminder.TelegramCommands
                 var command = InlineCallback.GetCommandByCallbackOrNull(update.CallbackQuery?.Data ?? "");
                 if (command != null)
                 {
-                    string message = "Specify the name you want to remove from the list:";
-                    Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+                    var message = "Specify the name you want to remove from the list:";
+                    var _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
                     update.RegisterStepHandler(new StepTelegram(StepTwoDate, new UserCache()));
                 }
             }
@@ -67,11 +67,11 @@ namespace BirthdayReminder.TelegramCommands
 
         public static async Task StepTwoDate(ITelegramBotClient botClient, Update update)
         {
-            string? enteredName = update.Message?.Text;
-            string message = $"There is no person with name {enteredName}\nPlease enter a valid title";
+            var enteredName = update.Message?.Text;
+            var message = $"There is no person with name {enteredName}\nPlease enter a valid title";
 
             var cache = update.GetCacheData<UserCache>();
-            foreach (string userName in cache.scheduleDict.Keys)
+            foreach (var userName in cache.scheduleDict.Keys)
             {
                 if (userName.Equals(enteredName))
                 {
@@ -80,15 +80,15 @@ namespace BirthdayReminder.TelegramCommands
                 }
             }
 
-            Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+            var _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
         }
 
 
         [InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.AllDel)]
         public static async Task Confirm(ITelegramBotClient botClient, Update update)
         {
-            long chatId = update.CallbackQuery.Message.Chat.Id;
-            int prevMessageId = MenuCommands.GetMessageId(chatId);
+            var chatId = update.CallbackQuery.Message.Chat.Id;
+            var prevMessageId = MenuCommands.GetMessageId(chatId);
             var message = "Confirm removing all Countdowns";
 
             var yesButton = new InlineCallback("Yes", ConfirmationTHeader.Yes);
@@ -97,7 +97,7 @@ namespace BirthdayReminder.TelegramCommands
             List<IInlineContent> yesOrNo = new List<IInlineContent>();
             yesOrNo.Add(yesButton);
             yesOrNo.Add(noButton);
-            InlineKeyboardMarkup inlineKeyboard = MenuGenerator.InlineKeyboard(2, yesOrNo);
+            var inlineKeyboard = MenuGenerator.InlineKeyboard(2, yesOrNo);
 
 
 
@@ -111,11 +111,11 @@ namespace BirthdayReminder.TelegramCommands
         [InlineCallbackHandler<ConfirmationTHeader>(ConfirmationTHeader.Yes)]
         public static async Task ClearCache(ITelegramBotClient botClient, Update update)
         {
-            string message = "Countdowns has been successfully removed!";
+            var message = "Countdowns has been successfully removed!";
             update.GetCacheData<UserCache>().ClearData();
 
-            long chatId = update.CallbackQuery.Message.Chat.Id;
-            int messageId = update.CallbackQuery.Message.MessageId;
+            var chatId = update.CallbackQuery.Message.Chat.Id;
+            var messageId = update.CallbackQuery.Message.MessageId;
 
             await botClient.EditMessageTextAsync(
                 chatId,
@@ -127,9 +127,9 @@ namespace BirthdayReminder.TelegramCommands
         [InlineCallbackHandler<ConfirmationTHeader>(ConfirmationTHeader.No)]
         public static async Task BackToEditCountdown(ITelegramBotClient botClient, Update update)
         {
-            long chatId = update.CallbackQuery.Message.Chat.Id;
-            int messageId = update.CallbackQuery.Message.MessageId;
-            string message = "Editing Schedule";
+            var chatId = update.CallbackQuery.Message.Chat.Id;
+            var messageId = update.CallbackQuery.Message.MessageId;
+            var message = "Editing Schedule";
             
 
 
@@ -142,7 +142,7 @@ namespace BirthdayReminder.TelegramCommands
             menu.Add(delButton);
             menu.Add(allDelButton);
 
-            InlineKeyboardMarkup editorMenu = MenuGenerator.InlineKeyboard(2, menu);
+            var editorMenu = MenuGenerator.InlineKeyboard(2, menu);
 
             await botClient.EditMessageTextAsync(chatId, messageId, message, replyMarkup: editorMenu);
         }

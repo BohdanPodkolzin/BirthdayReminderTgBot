@@ -12,11 +12,11 @@ namespace BirthdayReminder.TelegramCommands
         {
             if (update.Message?.From != null)
             {
-                User user = update.Message.From;
-                string userNickName = user?.Username ?? "";
+                var user = update.Message.From;
+                var userNickName = user?.Username ?? "";
 
-                string startMessage = $"🖐️ Hey, @{userNickName}!\nTo make your first schedule of bithdays enter /menu";
-                Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, startMessage);
+                var startMessage = $"🖐️ Hey, @{userNickName}!\nTo make your first schedule of bithdays enter /menu";
+                var _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, startMessage);
                 await InfinityLoop.StartReminderLoop(botClient, update);
             }
 

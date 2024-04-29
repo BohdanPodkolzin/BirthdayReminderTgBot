@@ -21,7 +21,7 @@ await tgBot.Start();
 static void TgBot_OnLogError(Exception ex, long? chatId)
 {
     Console.ForegroundColor = ConsoleColor.Red;
-    string errorMsg = $"{DateTime.Now}:{ex.Message}";
+    var errorMsg = $"{DateTime.Now}:{ex.Message}";
     Console.WriteLine(errorMsg);
     Console.ResetColor();
 }
@@ -29,7 +29,7 @@ static void TgBot_OnLogError(Exception ex, long? chatId)
 static void TgBot_OnLogCommon(string msg, Enum? eventTypes, ConsoleColor color)
 {
     Console.ForegroundColor = ConsoleColor.Yellow;
-    string commonMsg = $"{DateTime.Now}:{msg}";
+    var commonMsg = $"{DateTime.Now}:{msg}";
     Console.WriteLine(commonMsg);
     Console.ResetColor();
 }

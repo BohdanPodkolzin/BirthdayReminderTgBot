@@ -13,13 +13,13 @@ namespace BirthdayReminder.UsersCache
         {
             var cache = update.GetCacheData<UserCache>();
 
-            StringBuilder message = new StringBuilder();
+            var message = new StringBuilder();
             if (cache.scheduleDict.Count > 0)
             {
                 message.Append("<b>Birthdays schedule</b>\n");
                 foreach (var user in cache.scheduleDict)
                 {
-                    int daysUntilBirthday = GetDaysUntilBirthday(user.Value);
+                    var daysUntilBirthday = GetDaysUntilBirthday(user.Value);
                     message.AppendLine($"\n· <b>{user.Key}</b>, {user.Value.ToString("dd.MM.yyyy")} {(daysUntilBirthday.Equals(0) ? "<b>birthday is today!</b>" : $"until birthday: <b>{daysUntilBirthday}</b>")}");
                 }
             }
@@ -28,7 +28,7 @@ namespace BirthdayReminder.UsersCache
                 message.Append("<b>Your schedule is empty</b>.");
             }
 
-            Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message.ToString());
+            var _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message.ToString());
         }
 
 
@@ -48,16 +48,16 @@ namespace BirthdayReminder.UsersCache
 
         private static int GetDaysUntilBirthday(DateTime birthday)
         {
-            DateTime currentDate = DateTime.Today;
-            DateTime birthdayThisYear = new DateTime(currentDate.Year, birthday.Month, birthday.Day);
+            var currentDate = DateTime.Today;
+            var birthdayThisYear = new DateTime(currentDate.Year, birthday.Month, birthday.Day);
 
             if (birthdayThisYear < currentDate)
             {
                 birthdayThisYear = birthdayThisYear.AddYears(1);
             }
 
-            TimeSpan difference = birthdayThisYear - currentDate;
-            int daysUntilBirthday = (int)difference.TotalDays;
+            var difference = birthdayThisYear - currentDate;
+            var daysUntilBirthday = (int)difference.TotalDays;
 
             return daysUntilBirthday;
         }

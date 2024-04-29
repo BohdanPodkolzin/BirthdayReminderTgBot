@@ -18,18 +18,18 @@ namespace BirthdayReminder.TelegramCommands
         [ReplyMenuHandler("/menu")]
         public static async Task Menu(ITelegramBotClient botClient, Update update)
         {
-            string menuMessage = $"Homepage🏡";
+            var menuMessage = $"Homepage🏡";
 
             List<KeyboardButton> menuList = new List<KeyboardButton>();
             menuList.Add(new KeyboardButton("About"));
             menuList.Add(new KeyboardButton("Edit Countdown"));
             menuList.Add(new KeyboardButton("Show countdown"));
 
-            ReplyKeyboardMarkup menu = MenuGenerator.ReplyKeyboard(2, menuList);
-            OptionMessage option = new OptionMessage();
+            var menu = MenuGenerator.ReplyKeyboard(2, menuList);
+            var option = new OptionMessage();
             option.MenuReplyKeyboardMarkup = menu;
 
-            Message showMenu = await PRTelegramBot.Helpers.Message.Send(botClient, update, menuMessage, option);
+            var showMenu = await PRTelegramBot.Helpers.Message.Send(botClient, update, menuMessage, option);
 
         }
 
@@ -45,8 +45,8 @@ namespace BirthdayReminder.TelegramCommands
         [ReplyMenuHandler("Edit Countdown")]
         public static async Task EditCountdown(ITelegramBotClient botClient, Update update)
         {
-            long chatId = update.Message.Chat.Id;
-            int prevMessageId = GetMessageId(chatId);
+            var chatId = update.Message.Chat.Id;
+            var prevMessageId = GetMessageId(chatId);
 
             if (prevMessageId != -1)
             {
@@ -62,13 +62,13 @@ namespace BirthdayReminder.TelegramCommands
             menu.Add(delButton);
             menu.Add(allDelButton);
 
-            InlineKeyboardMarkup editorMenu = MenuGenerator.InlineKeyboard(2, menu);
+            var editorMenu = MenuGenerator.InlineKeyboard(2, menu);
 
-            OptionMessage option = new OptionMessage();
+            var option = new OptionMessage();
             option.MenuInlineKeyboardMarkup = editorMenu;
 
-            string message = "Editing Schedule";
-            Message sendMessage = await PRTelegramBot.Helpers.Message.Send(botClient, update, message, option);
+            var message = "Editing Schedule";
+            var sendMessage = await PRTelegramBot.Helpers.Message.Send(botClient, update, message, option);
             
             SetMessageId(chatId, sendMessage.MessageId);
         }
@@ -77,7 +77,7 @@ namespace BirthdayReminder.TelegramCommands
         {
             if (_editCountdownMessageIds.ContainsKey(chatId))
             {
-                int messageId = _editCountdownMessageIds[chatId];
+                var messageId = _editCountdownMessageIds[chatId];
                 _editCountdownMessageIds.Remove(chatId);
                 return messageId;
             }
