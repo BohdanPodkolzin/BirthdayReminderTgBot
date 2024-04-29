@@ -1,6 +1,5 @@
-﻿using BirthdayReminder.Enums;
-using BirthdayReminder.Helpers;
-using BirthdayReminder.UsersCache;
+﻿using BirthdayReminder.Telegram.Helpers;
+using BirthdayReminder.Telegram.InlineCommands;
 using PRTelegramBot.Attributes;
 using PRTelegramBot.Extensions;
 using PRTelegramBot.Models;
@@ -8,11 +7,11 @@ using PRTelegramBot.Models.InlineButtons;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
-namespace BirthdayReminder.TelegramCommands
+namespace BirthdayReminder.Telegram.CommandHandlers
 {
     public class EditCountdownCommands
     {
-        [InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.Add)]
+        [InlineCallbackHandler<CountdownInlineCommandTHeader>(CountdownInlineCommandTHeader.Add)]
         public static async Task AddStepOne(ITelegramBotClient botClient, Update update)
         {
             try
@@ -37,14 +36,14 @@ namespace BirthdayReminder.TelegramCommands
             var message = $"Entered name <b>{update.Message?.Text}</b>";
             _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
 
-            await Calendar.Calendar.PickCalendar(botClient, update);
+            await Calendar.PickCalendar(botClient, update);
 
             var cache = update.GetCacheData<UserCache>();
             cache.PersonName = update.Message?.Text;
         }
 
 
-        [InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.Del)]
+        [InlineCallbackHandler<CountdownInlineCommandTHeader>(CountdownInlineCommandTHeader.Del)]
         public static async Task StepOneDel(ITelegramBotClient botClient, Update update)
         {
             try
@@ -81,7 +80,7 @@ namespace BirthdayReminder.TelegramCommands
             _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
         }
 
-        [InlineCallbackHandler<EditCountdownTHeader>(EditCountdownTHeader.AllDel)]
+        [InlineCallbackHandler<CountdownInlineCommandTHeader>(CountdownInlineCommandTHeader.AllDel)]
         public static async Task Confirm(ITelegramBotClient botClient, Update update)
         {
             const string message = "Confirm removing all Countdowns";
@@ -98,7 +97,7 @@ namespace BirthdayReminder.TelegramCommands
 
 
 
-        [InlineCallbackHandler<ConfirmationTHeader>(ConfirmationTHeader.Yes)]
+        [InlineCallbackHandler<ConfirmationInlineCommandTHeader>(ConfirmationInlineCommandTHeader.Yes)]
         public static async Task ClearCache(ITelegramBotClient botClient, Update update)
         {
             const string message = "Countdowns has been successfully removed!";
@@ -114,7 +113,7 @@ namespace BirthdayReminder.TelegramCommands
             );
         }
 
-        [InlineCallbackHandler<ConfirmationTHeader>(ConfirmationTHeader.No)]
+        [InlineCallbackHandler<ConfirmationInlineCommandTHeader>(ConfirmationInlineCommandTHeader.No)]
         public static async Task BackToEditCountdown(ITelegramBotClient botClient, Update update)
         {
             const string message = "Editing Schedule";

@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel;
 using PRTelegramBot.Attributes;
 
-namespace BirthdayReminder.Enums
+namespace BirthdayReminder.Telegram.InlineCommands
 {
     [InlineCommand]
-    public enum EditCountdownTHeader
+    public enum CountdownInlineCommandTHeader
     {
         [Description("Add Button")]
         Add = 500,

@@ -4,7 +4,7 @@ using PRTelegramBot.Extensions;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
-namespace BirthdayReminder.UsersCache
+namespace BirthdayReminder.Telegram.CommandHandlers
 {
     public static class CacheCommand
     {

@@ -1,4 +1,4 @@
-﻿using BirthdayReminder.UsersCache;
+﻿using BirthdayReminder.Telegram.CommandHandlers;
 using PRTelegramBot.Extensions;
 using Telegram.Bot;
 using Telegram.Bot.Types;

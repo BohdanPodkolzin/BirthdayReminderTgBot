@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel;
 using PRTelegramBot.Attributes;
 
-namespace BirthdayReminder.Enums
+namespace BirthdayReminder.Telegram.InlineCommands
 {
     [InlineCommand]
-    public enum ConfirmationTHeader
+    public enum ConfirmationInlineCommandTHeader
     {
         [Description("Yes")]
         Yes = 601,

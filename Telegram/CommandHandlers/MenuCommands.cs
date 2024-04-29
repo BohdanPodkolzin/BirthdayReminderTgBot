@@ -1,4 +1,4 @@
-﻿using BirthdayReminder.Helpers;
+﻿using BirthdayReminder.Telegram.Helpers;
 using PRTelegramBot.Attributes;
 using PRTelegramBot.Extensions;
 using PRTelegramBot.Models;
@@ -7,7 +7,7 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace BirthdayReminder.TelegramCommands
+namespace BirthdayReminder.Telegram.CommandHandlers
 {
     public static class MenuCommands
     {

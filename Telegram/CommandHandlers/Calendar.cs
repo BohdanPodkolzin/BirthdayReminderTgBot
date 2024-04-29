@@ -1,5 +1,4 @@
-﻿using BirthdayReminder.Helpers;
-using BirthdayReminder.UsersCache;
+﻿using BirthdayReminder.Telegram.Helpers;
 using PRTelegramBot.Attributes;
 using PRTelegramBot.Extensions;
 using PRTelegramBot.Models;
@@ -9,7 +8,7 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using THeader = PRTelegramBot.Models.Enums.THeader;
 
-namespace BirthdayReminder.Calendar
+namespace BirthdayReminder.Telegram.CommandHandlers
 {
     public static class Calendar
     {

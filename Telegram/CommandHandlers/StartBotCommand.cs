@@ -3,7 +3,7 @@ using PRTelegramBot.Attributes;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
-namespace BirthdayReminder.TelegramCommands
+namespace BirthdayReminder.Telegram.CommandHandlers
 {
     public static class StartBotCommand
     {

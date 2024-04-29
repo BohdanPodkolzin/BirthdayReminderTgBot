@@ -1,5 +1,5 @@
 using System.Globalization;
-using BirthdayReminder.Enums;
+using BirthdayReminder.Telegram.InlineCommands;
 using PRTelegramBot.Interface;
 using PRTelegramBot.Models;
 using PRTelegramBot.Models.CallbackCommands;
@@ -8,14 +8,14 @@ using PRTelegramBot.Utils;
 using PRTelegramBot.Utils.Controls.CalendarControl.Common;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace BirthdayReminder.Helpers;
+namespace BirthdayReminder.Telegram.Helpers;
 
 public static class InlineKeyboardsHelper
 {
     public static InlineKeyboardMarkup ConfirmationKeyboard()
     {
-        var yesButton = new InlineCallback("Yes", ConfirmationTHeader.Yes);
-        var noButton = new InlineCallback("No", ConfirmationTHeader.No);
+        var yesButton = new InlineCallback("Yes", ConfirmationInlineCommandTHeader.Yes);
+        var noButton = new InlineCallback("No", ConfirmationInlineCommandTHeader.No);
 
         var yesOrNo = new List<IInlineContent>
         {
@@ -27,9 +27,9 @@ public static class InlineKeyboardsHelper
 
     public static InlineKeyboardMarkup MenuKeyboard()
     {
-        var addButton = new InlineCallback("Add Countdown", EditCountdownTHeader.Add);
-        var delButton = new InlineCallback("Delete Countdown", EditCountdownTHeader.Del);
-        var allDelButton = new InlineCallback("Delete All Schedule", EditCountdownTHeader.AllDel);
+        var addButton = new InlineCallback("Add Countdown", CountdownInlineCommandTHeader.Add);
+        var delButton = new InlineCallback("Delete Countdown", CountdownInlineCommandTHeader.Del);
+        var allDelButton = new InlineCallback("Delete All Schedule", CountdownInlineCommandTHeader.AllDel);
 
         List<IInlineContent> menu =
         [
