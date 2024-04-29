@@ -15,11 +15,10 @@ namespace BirthdayReminder.TelegramCommands
                 var user = update.Message.From;
                 var userNickName = user?.Username ?? "";
 
-                var startMessage = $"🖐️ Hey, @{userNickName}!\nTo make your first schedule of bithdays enter /menu";
-                var _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, startMessage);
+                var startMessage = $"🖐️ Hey, @{userNickName}!\nTo make your first schedule of birthdays enter /menu";
+                await PRTelegramBot.Helpers.Message.Send(botClient, update, startMessage);
                 await InfinityLoop.StartReminderLoop(botClient, update);
             }
-
         }
     }
 }
