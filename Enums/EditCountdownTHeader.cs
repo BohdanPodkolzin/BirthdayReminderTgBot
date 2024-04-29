@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using PRTelegramBot.Attributes;
 
-namespace BirthdayReminder.Models
+namespace BirthdayReminder.Enums
 {
     [InlineCommand]
     public enum EditCountdownTHeader

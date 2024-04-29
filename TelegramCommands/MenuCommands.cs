@@ -1,4 +1,4 @@
-﻿using BirthdayReminder.Models;
+﻿using BirthdayReminder.Enums;
 using PRTelegramBot.Attributes;
 using PRTelegramBot.Interface;
 using PRTelegramBot.Models;

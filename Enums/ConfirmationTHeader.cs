@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using PRTelegramBot.Attributes;
 
-namespace BirthdayReminder.Models
+namespace BirthdayReminder.Enums
 {
     [InlineCommand]
     public enum ConfirmationTHeader
@@ -10,6 +10,5 @@ namespace BirthdayReminder.Models
         Yes = 601,
         [Description("No")]
         No,
-
     }
 }
