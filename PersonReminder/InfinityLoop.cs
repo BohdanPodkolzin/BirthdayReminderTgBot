@@ -5,14 +5,13 @@ namespace BirthdayReminder.PersonReminder
 {
     public class InfinityLoop
     {
-
         private static readonly TimeSpan _checkInterval = TimeSpan.FromSeconds(10);
 
         private static DateTime _lastCheckDate = DateTime.Now;
 
         public static async Task StartReminderLoop(ITelegramBotClient botClient, Update update)
         {
-            for (; ; )
+            while (true)
             {
                 if (_lastCheckDate.Day != DateTime.Now.Day)
                 {
@@ -22,7 +21,5 @@ namespace BirthdayReminder.PersonReminder
                 await Task.Delay(_checkInterval);
             }
         }
-
-
     }
 }
