@@ -1,15 +1,12 @@
-﻿using System.Globalization;
-using BirthdayReminder.Helpers;
+﻿using BirthdayReminder.Helpers;
 using BirthdayReminder.UsersCache;
 using PRTelegramBot.Attributes;
 using PRTelegramBot.Extensions;
 using PRTelegramBot.Models;
 using PRTelegramBot.Models.CallbackCommands;
 using PRTelegramBot.Models.InlineButtons;
-using PRTelegramBot.Utils.Controls.CalendarControl.Common;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.ReplyMarkups;
 using THeader = PRTelegramBot.Models.Enums.THeader;
 
 namespace BirthdayReminder.Calendar

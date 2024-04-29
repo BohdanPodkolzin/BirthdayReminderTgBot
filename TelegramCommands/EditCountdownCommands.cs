@@ -3,13 +3,10 @@ using BirthdayReminder.Helpers;
 using BirthdayReminder.UsersCache;
 using PRTelegramBot.Attributes;
 using PRTelegramBot.Extensions;
-using PRTelegramBot.Interface;
 using PRTelegramBot.Models;
 using PRTelegramBot.Models.InlineButtons;
-using PRTelegramBot.Utils;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.ReplyMarkups;
 
 namespace BirthdayReminder.TelegramCommands
 {
