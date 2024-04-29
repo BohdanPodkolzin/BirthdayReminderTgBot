@@ -3,9 +3,9 @@ using Telegram.Bot.Types;
 
 namespace BirthdayReminder.PersonReminder
 {
-    public class InfinityLoop
+    public static class InfinityLoop
     {
-        private static readonly TimeSpan _checkInterval = TimeSpan.FromSeconds(10);
+        private static readonly TimeSpan CheckInterval = TimeSpan.FromSeconds(10);
 
         private static DateTime _lastCheckDate = DateTime.Now;
 
@@ -18,7 +18,7 @@ namespace BirthdayReminder.PersonReminder
                     await ReminderBack.RemindPersonForBirthday(botClient, update);
                     _lastCheckDate = DateTime.Now;
                 }
-                await Task.Delay(_checkInterval);
+                await Task.Delay(CheckInterval);
             }
         }
     }

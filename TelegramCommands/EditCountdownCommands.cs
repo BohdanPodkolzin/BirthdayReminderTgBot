@@ -70,11 +70,11 @@ namespace BirthdayReminder.TelegramCommands
             var message = $"There is no person with name {enteredName}\nPlease enter a valid title";
 
             var cache = update.GetCacheData<UserCache>();
-            foreach (var userName in cache.scheduleDict.Keys)
+            foreach (var userName in cache.ScheduleDict.Keys)
             {
                 if (userName.Equals(enteredName))
                 {
-                    cache.scheduleDict.Remove(userName);
+                    cache.ScheduleDict.Remove(userName);
                     message = $"<b>{enteredName}</b> is no longer in the schedule";
                 }
             }

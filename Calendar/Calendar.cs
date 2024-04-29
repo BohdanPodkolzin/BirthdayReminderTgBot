@@ -25,7 +25,8 @@ namespace BirthdayReminder.Calendar
                 MenuInlineKeyboardMarkup = calendarMarkup
             };
 
-            _ = await PRTelegramBot.Helpers.Message.Send(botClient, update.GetChatId(), "<b>Pick a date</b>", option);
+            const string message = "<b>Pick a date</b>";
+            await PRTelegramBot.Helpers.Message.Send(botClient, update.GetChatId(), message, option);
         }
 
         [InlineCallbackHandler<THeader>(THeader.YearMonthPicker)]

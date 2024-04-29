@@ -4,13 +4,13 @@ namespace BirthdayReminder.UsersCache
 {
     public class UserCache : ITelegramCache
     {
-        public Dictionary<string, DateTime> scheduleDict = new();
+        public readonly Dictionary<string, DateTime> ScheduleDict = new();
         public string? PersonName { get; set; }
         public DateTime DateT { get; set; }
 
         public bool ClearData()
         {
-            scheduleDict.Clear();
+            ScheduleDict.Clear();
             PersonName = null;
             DateT = DateTime.MinValue;
             return true;

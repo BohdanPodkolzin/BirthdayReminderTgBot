@@ -6,36 +6,45 @@ using Telegram.Bot.Types;
 
 namespace BirthdayReminder.UsersCache
 {
-    public class CacheCommand
+    public static class CacheCommand
     {
         [ReplyMenuHandler("Show Countdown")]
         public static async Task CheckCache(ITelegramBotClient botClient, Update update)
         {
             var cache = update.GetCacheData<UserCache>();
 
-            var message = new StringBuilder();
-            if (cache.scheduleDict.Count > 0)
+            var messageBuilder = new StringBuilder();
+            if (cache.ScheduleDict.Count <= 0)
             {
-                message.Append("<b>Birthdays schedule</b>\n");
-                foreach (var user in cache.scheduleDict)
-                {
-                    var daysUntilBirthday = GetDaysUntilBirthday(user.Value);
-                    message.AppendLine($"\n· <b>{user.Key}</b>, {user.Value.ToString("dd.MM.yyyy")} {(daysUntilBirthday.Equals(0) ? "<b>birthday is today!</b>" : $"until birthday: <b>{daysUntilBirthday}</b>")}");
-                }
+                messageBuilder.Append("<b>Your schedule is empty</b>.");
             }
             else
             {
-                message.Append("<b>Your schedule is empty</b>.");
+                messageBuilder.Append("<b>Birthdays schedule</b>\n");
+                foreach (var user in cache.ScheduleDict)
+                {
+                    var daysUntilBirthday = GetDaysUntilBirthday(user.Value);
+                    messageBuilder
+                        .AppendLine()
+                        .AppendLine($"· <b>{user.Key}</b>, " +
+                                    $"{user.Value.ToString("dd.MM.yyyy")} " +
+                                    $"{GetCountdownPart(daysUntilBirthday)}"
+                        );
+                }
+
+                string GetCountdownPart(int daysUntilBirthday)
+                    => daysUntilBirthday is 0
+                        ? "<b>birthday is today!</b>"
+                        : $"until birthday: <b>{daysUntilBirthday}</b>";
             }
 
-            await PRTelegramBot.Helpers.Message.Send(botClient, update, message.ToString());
+            await PRTelegramBot.Helpers.Message.Send(botClient, update, messageBuilder.ToString());
         }
-
 
         public static void UpdateCache(Update update, string name, DateTime date)
         {
             var cache = update.GetCacheData<UserCache>();
-            cache.scheduleDict[name] = date;
+            cache.ScheduleDict[name] = date;
         }
 
         private static int GetDaysUntilBirthday(DateTime birthday)
@@ -54,5 +63,4 @@ namespace BirthdayReminder.UsersCache
             return daysUntilBirthday;
         }
     }
-
 }

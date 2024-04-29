@@ -13,7 +13,7 @@ namespace BirthdayReminder.PersonReminder
             var currDate = DateTime.Today;
             var cache = update.GetCacheData<UserCache>();
 
-            foreach (var user in cache.scheduleDict)
+            foreach (var user in cache.ScheduleDict)
             {
                 if (user.Value.Month.Equals(currDate.Month) && user.Value.Day.Equals(currDate.Day))
                 {
