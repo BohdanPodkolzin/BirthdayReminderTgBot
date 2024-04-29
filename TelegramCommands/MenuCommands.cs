@@ -1,5 +1,6 @@
 ﻿using BirthdayReminder.Enums;
 using PRTelegramBot.Attributes;
+using PRTelegramBot.Extensions;
 using PRTelegramBot.Interface;
 using PRTelegramBot.Models;
 using PRTelegramBot.Models.InlineButtons;
@@ -46,7 +47,7 @@ namespace BirthdayReminder.TelegramCommands
         [ReplyMenuHandler("Edit Countdown")]
         public static async Task EditCountdown(ITelegramBotClient botClient, Update update)
         {
-            var chatId = update.Message.Chat.Id;
+            var chatId = update.GetChatId();
 
             var prevMessageId = GetPrevMessageIdInChat(chatId);
             if (prevMessageId != -1)
@@ -75,13 +76,13 @@ namespace BirthdayReminder.TelegramCommands
             const string message = "Editing Schedule";
             var sendMessage = await PRTelegramBot.Helpers.Message.Send(botClient, update, message, option);
             
-            SetPrevMessageIdInChat(chatId, sendMessage.MessageId);
+            SavePrevMessageIdInChat(chatId, sendMessage.MessageId);
         }
 
         public static int GetPrevMessageIdInChat(long chatId)
             => EditCountdownMessageIds.Remove(chatId, out var value) ? value : -1;
 
-        public static void SetPrevMessageIdInChat(long chatId, int messageId)
+        public static void SavePrevMessageIdInChat(long chatId, int messageId)
             => EditCountdownMessageIds[chatId] = messageId;
     }
 }
