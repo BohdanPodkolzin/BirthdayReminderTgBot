@@ -50,10 +50,6 @@ namespace BirthdayReminder.Telegram.CommandHandlers
             try
             {
                 var command = InlineCallback<CalendarTCommand>.GetCommandByCallbackOrNull(update.CallbackQuery.Data);
-                if (command is not { } __)
-                {
-                    return;
-                }
 
                 var data = command.Data.Date;
 

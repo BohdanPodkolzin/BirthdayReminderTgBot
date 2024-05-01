@@ -12,6 +12,9 @@ namespace BirthdayReminder.Telegram.CommandHandlers
 {
     public class EditCountdownCommands
     {
+        private static UserCache GetUserCache(Update update) 
+            => update.GetCacheData<UserCache>();
+
         [InlineCallbackHandler<CountdownInlineCommandTHeader>(CountdownInlineCommandTHeader.Add)]
         public static async Task CreateEventStepOne(ITelegramBotClient botClient, Update update)
         {
@@ -26,7 +29,7 @@ namespace BirthdayReminder.Telegram.CommandHandlers
                 const string message = "Enter the name of the person";
                 await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
 
-                update.RegisterStepHandler(new StepTelegram(CreateEventStepTwo, new UserCache()));
+                update.RegisterStepHandler(new StepTelegram(CreateEventStepTwo, GetUserCache(update)));
             }
             catch (Exception ex)
             {
@@ -41,8 +44,7 @@ namespace BirthdayReminder.Telegram.CommandHandlers
 
             await CalendarCommandHandlers.PickCalendar(botClient, update);
 
-            var cache = update.GetCacheData<UserCache>();
-            cache.PersonName = update.Message?.Text;
+            GetUserCache(update).PersonName = update.Message?.Text;
         }
 
 
@@ -57,10 +59,19 @@ namespace BirthdayReminder.Telegram.CommandHandlers
                     return;
                 }
 
-                const string message = "Specify the name you want to remove from the list:";
+                string message;
+
+                if (GetUserCache(update).ScheduleDict.Count <= 0)
+                {
+                    message = "There are no people in the schedule";
+                    await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+                    return;
+                }
+
+                message = "Specify the name you want to remove from the list:";
                 await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
 
-                update.RegisterStepHandler(new StepTelegram(DeleteEventStepTwo, new UserCache()));
+                update.RegisterStepHandler(new StepTelegram(DeleteEventStepTwo, GetUserCache(update)));
             }
             catch (Exception ex)
             {
@@ -73,7 +84,7 @@ namespace BirthdayReminder.Telegram.CommandHandlers
             var enteredName = update.Message?.Text;
             var message = $"There is no person with name {enteredName}\nPlease enter a valid title";
 
-            var cache = update.GetCacheData<UserCache>();
+            var cache = GetUserCache(update);
             foreach (var userName in cache.ScheduleDict.Keys
                          .Where(userName => userName.Equals(enteredName)))
             {
