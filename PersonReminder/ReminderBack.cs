@@ -1,5 +1,4 @@
-﻿using BirthdayReminder.Telegram.CommandHandlers;
-using BirthdayReminder.Telegram.Models;
+﻿using BirthdayReminder.Telegram.Models;
 using PRTelegramBot.Extensions;
 using Telegram.Bot;
 using Telegram.Bot.Types;

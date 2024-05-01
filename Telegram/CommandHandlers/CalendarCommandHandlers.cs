@@ -1,4 +1,5 @@
-﻿using BirthdayReminder.Telegram.Helpers;
+﻿using BirthdayReminder.PersonReminder;
+using BirthdayReminder.Telegram.Helpers;
 using BirthdayReminder.Telegram.Models;
 using PRTelegramBot.Attributes;
 using PRTelegramBot.Extensions;
@@ -60,6 +61,8 @@ namespace BirthdayReminder.Telegram.CommandHandlers
                 var cache = update.GetCacheData<UserCache>();
                 cache.DateT = data;
                 CacheCommand.UpdateCache(update, cache.PersonName ?? "unknown", cache.DateT);
+
+                await ReminderBack.RemindPersonForBirthday(botClient, update);
             }
             catch (Exception ex)
             {

@@ -1,4 +1,5 @@
-﻿using BirthdayReminder.Telegram.Helpers;
+﻿using BirthdayReminder.PersonReminder;
+using BirthdayReminder.Telegram.Helpers;
 using BirthdayReminder.Telegram.InlineCommands;
 using BirthdayReminder.Telegram.Models;
 using PRTelegramBot.Attributes;
@@ -27,7 +28,7 @@ namespace BirthdayReminder.Telegram.CommandHandlers
                 }
 
                 const string message = "Enter the name of the person";
-                await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+                await PRTelegramBot.Helpers.Message.Edit(botClient, update, message);
 
                 update.RegisterStepHandler(new StepTelegram(CreateEventStepTwo, GetUserCache(update)));
             }
