@@ -70,7 +70,7 @@ namespace BirthdayReminder.Telegram.CommandHandlers
                 }
 
                 message = "Specify the name you want to remove from the list:";
-                await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+                await PRTelegramBot.Helpers.Message.Edit(botClient, update, message);
 
                 update.RegisterStepHandler(new StepTelegram(DeleteEventStepTwo, GetUserCache(update)));
             }
