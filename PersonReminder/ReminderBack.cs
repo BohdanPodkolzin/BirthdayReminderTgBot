@@ -1,29 +1,29 @@
-﻿using PRTelegramBot.Extensions;
+﻿using BirthdayReminder.Telegram.CommandHandlers;
+using BirthdayReminder.Telegram.Models;
+using PRTelegramBot.Extensions;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using tg.UsersCache;
 
-namespace tg.PersonReminder
+namespace BirthdayReminder.PersonReminder
 {
-    public class ReminderBack
+    public static class ReminderBack
     {
-
         public static async Task RemindPersonForBirthday(ITelegramBotClient botClient, Update update)
         {
-            DateTime currDate = DateTime.Today;
+            var currDate = DateTime.Today;
             var cache = update.GetCacheData<UserCache>();
 
-            foreach (var user in cache.scheduleDict)
+            foreach (var user in cache.ScheduleDict)
             {
                 if (user.Value.Month.Equals(currDate.Month) && user.Value.Day.Equals(currDate.Day))
                 {
-                    string message = $"Today is {user.Key}'s birthday!";
-                    Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+                    var message = $"Today is {user.Key}'s birthday!";
+                    _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
                 }
                 else if (user.Value.Month.Equals(currDate.Month) && user.Value.Day.Equals(currDate.Day + 1))
                 {
-                    string message = $"{user.Key}'s birthday is tomorrow!";
-                    Message _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+                    var message = $"{user.Key}'s birthday is tomorrow!";
+                    _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
                 }
             }
         }

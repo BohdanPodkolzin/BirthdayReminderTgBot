@@ -1,45 +1,43 @@
-﻿using System;
-using PRTelegramBot;
-using PRTelegramBot.Core;
+﻿using PRTelegramBot.Core;
 using tg;
 
-const string EXIT = "exit";
-
+const string exit = "exit";
 
 var tgBot = new PRBot(option =>
 {
-    option.Token = BotCfg.Token;
-    option.Admins = new List<long> { };
-    option.WhiteListUsers = new List<long> { };
-    option.ClearUpdatesOnStart = true;
     option.BotId = 0;
+    option.Admins = [];
+    option.WhiteListUsers = [];
+    option.Token = BotCfg.Token;
+    option.ClearUpdatesOnStart = true;
 });
 
-tgBot.OnLogCommon += TgBot_OnLogCommon;
-tgBot.OnLogError += TgBot_OnLogError;
+tgBot.OnLogCommon += TgBotOnLogCommon;
+tgBot.OnLogError += TgBotOnLogError;
 
 await tgBot.Start();
-static void TgBot_OnLogError(Exception ex, long? chatId)
-{
-    Console.ForegroundColor = ConsoleColor.Red;
-    string errorMsg = $"{DateTime.Now}:{ex.Message}";
-    Console.WriteLine(errorMsg);
-    Console.ResetColor();
-}
-
-static void TgBot_OnLogCommon(string msg, Enum? eventTypes, ConsoleColor color)
-{
-    Console.ForegroundColor = ConsoleColor.Yellow;
-    string commonMsg = $"{DateTime.Now}:{msg}";
-    Console.WriteLine(commonMsg);
-    Console.ResetColor();
-}
 
 while (true)
 {
     var result = Console.ReadLine();
-    if (result?.ToLower() == EXIT)
+    if (result?.ToLower() == exit)
     {
         Environment.Exit(0);
     }
+}
+
+static void TgBotOnLogCommon(string msg, Enum? eventTypes, ConsoleColor color)
+{
+    Console.ForegroundColor = ConsoleColor.Yellow;
+    var commonMsg = $"{DateTime.Now}:{msg}";
+    Console.WriteLine(commonMsg);
+    Console.ResetColor();
+}
+
+static void TgBotOnLogError(Exception ex, long? chatId)
+{
+    Console.ForegroundColor = ConsoleColor.Red;
+    var errorMsg = $"{DateTime.Now}:{ex.Message}";
+    Console.WriteLine(errorMsg);
+    Console.ResetColor();
 }

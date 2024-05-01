@@ -1,0 +1,130 @@
+﻿using BirthdayReminder.Telegram.Helpers;
+using BirthdayReminder.Telegram.InlineCommands;
+using BirthdayReminder.Telegram.Models;
+using PRTelegramBot.Attributes;
+using PRTelegramBot.Extensions;
+using PRTelegramBot.Models;
+using PRTelegramBot.Models.InlineButtons;
+using Telegram.Bot;
+using Telegram.Bot.Types;
+
+namespace BirthdayReminder.Telegram.CommandHandlers
+{
+    public class EditCountdownCommands
+    {
+        [InlineCallbackHandler<CountdownInlineCommandTHeader>(CountdownInlineCommandTHeader.Add)]
+        public static async Task CreateEventStepOne(ITelegramBotClient botClient, Update update)
+        {
+            try
+            {
+                var command = InlineCallback.GetCommandByCallbackOrNull(update.CallbackQuery?.Data ?? "");
+                if (command is not { } __)
+                {
+                    return;
+                }
+
+                const string message = "Enter the name of the person";
+                await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+
+                update.RegisterStepHandler(new StepTelegram(CreateEventStepTwo, new UserCache()));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+
+        private static async Task CreateEventStepTwo(ITelegramBotClient botClient, Update update)
+        {
+            var message = $"Entered name <b>{update.Message?.Text}</b>";
+            await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+
+            await CalendarCommandHandlers.PickCalendar(botClient, update);
+
+            var cache = update.GetCacheData<UserCache>();
+            cache.PersonName = update.Message?.Text;
+        }
+
+
+        [InlineCallbackHandler<CountdownInlineCommandTHeader>(CountdownInlineCommandTHeader.Del)]
+        public static async Task DeleteEventStepOne(ITelegramBotClient botClient, Update update)
+        {
+            try
+            {
+                var command = InlineCallback.GetCommandByCallbackOrNull(update.CallbackQuery?.Data ?? "");
+                if (command is not { } __)
+                {
+                    return;
+                }
+
+                const string message = "Specify the name you want to remove from the list:";
+                await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+
+                update.RegisterStepHandler(new StepTelegram(DeleteEventStepTwo, new UserCache()));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
+
+        private static async Task DeleteEventStepTwo(ITelegramBotClient botClient, Update update)
+        {
+            var enteredName = update.Message?.Text;
+            var message = $"There is no person with name {enteredName}\nPlease enter a valid title";
+
+            var cache = update.GetCacheData<UserCache>();
+            foreach (var userName in cache.ScheduleDict.Keys
+                         .Where(userName => userName.Equals(enteredName)))
+            {
+                cache.ScheduleDict.Remove(userName);
+                message = $"<b>{enteredName}</b> is no longer in the schedule";
+            }
+
+            await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+        }
+
+        [InlineCallbackHandler<CountdownInlineCommandTHeader>(CountdownInlineCommandTHeader.AllDel)]
+        public static async Task Confirm(ITelegramBotClient botClient, Update update)
+        {
+            const string message = "Confirm removing all Countdowns";
+
+            var chatId = update.GetChatId();
+            var prevMessageId = MenuCommandHandlers.GetPrevMessageIdInChat(chatId);
+
+            var inlineKeyboard = InlineKeyboardsHelper.ConfirmationKeyboard();
+            var sentMessage = await botClient.EditMessageTextAsync(
+                chatId, prevMessageId, message, replyMarkup: inlineKeyboard);
+
+            MenuCommandHandlers.SavePrevMessageIdInChat(chatId, sentMessage.MessageId);
+        }
+
+        [InlineCallbackHandler<ConfirmationInlineCommandTHeader>(ConfirmationInlineCommandTHeader.Yes)]
+        public static async Task ResetAllEvents(ITelegramBotClient botClient, Update update)
+        {
+            const string message = "Countdowns has been successfully removed!";
+            update.GetCacheData<UserCache>().ClearData();
+
+            var chatId = update.GetChatId();
+            var messageId = update.GetMessageId();
+
+            await botClient.EditMessageTextAsync(
+                chatId,
+                messageId,
+                text: message
+            );
+        }
+
+        [InlineCallbackHandler<ConfirmationInlineCommandTHeader>(ConfirmationInlineCommandTHeader.No)]
+        public static async Task BackToEditCountdown(ITelegramBotClient botClient, Update update)
+        {
+            const string message = "Editing Schedule";
+
+            var chatId = update.GetChatId();
+            var messageId = update.GetMessageId();
+
+            var editorMenu = InlineKeyboardsHelper.CountdownMenuKeyboard();
+            await botClient.EditMessageTextAsync(chatId, messageId, message, replyMarkup: editorMenu);
+        }
+    }
+}

@@ -1,17 +1,16 @@
-﻿using PRTelegramBot.Models;
-using PRTelegramBot.Interface;
+﻿using PRTelegramBot.Interface;
 
-namespace tg.UsersCache
+namespace BirthdayReminder.Telegram.Models
 {
     public class UserCache : ITelegramCache
     {
-        public Dictionary<string, DateTime> scheduleDict = new Dictionary<string, DateTime>();
+        public readonly Dictionary<string, DateTime> ScheduleDict = new();
         public string? PersonName { get; set; }
         public DateTime DateT { get; set; }
 
         public bool ClearData()
         {
-            scheduleDict.Clear();
+            ScheduleDict.Clear();
             PersonName = null;
             DateT = DateTime.MinValue;
             return true;
