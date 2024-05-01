@@ -50,11 +50,21 @@ namespace BirthdayReminder.Telegram.CommandHandlers
 
             try
             {
-                var command = InlineCallback<CalendarTCommand>.GetCommandByCallbackOrNull(update.CallbackQuery.Data);
+                string message;
+                var command = InlineCallback<CalendarTCommand>
+                    .GetCommandByCallbackOrNull(update.CallbackQuery.Data);
 
                 var data = command.Data.Date;
 
-                var message = $"Picked date: <b>{data:dd.MM.yyyy}</b>";
+                if (data > DateTime.Now)
+                {
+                    message = "Oops.. You are trying to pick a future date..\nEnter another one";
+                    await PRTelegramBot.Helpers.Message.Edit(botClient, update, message);
+                    return;
+                }
+
+                message = $"Picked date: <b>{data:dd.MM.yyyy}</b>";
+
                 await PRTelegramBot.Helpers.Message.Edit(botClient, update, message);
 
                 //caching date

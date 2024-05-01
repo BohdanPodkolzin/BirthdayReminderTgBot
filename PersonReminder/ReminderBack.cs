@@ -10,6 +10,7 @@ namespace BirthdayReminder.PersonReminder
         public static async Task RemindPersonForBirthday(ITelegramBotClient botClient, Update update)
         {
             var currDate = DateTime.Today;
+
             var cache = update.GetCacheData<UserCache>();
 
             foreach (var user in cache.ScheduleDict)
