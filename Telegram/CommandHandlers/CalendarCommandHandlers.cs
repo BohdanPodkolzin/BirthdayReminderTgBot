@@ -1,5 +1,4 @@
-﻿using BirthdayReminder.PersonReminder;
-using BirthdayReminder.Telegram.Helpers;
+﻿using BirthdayReminder.Telegram.Helpers;
 using BirthdayReminder.Telegram.Models;
 using PRTelegramBot.Attributes;
 using PRTelegramBot.Extensions;
@@ -59,20 +58,18 @@ namespace BirthdayReminder.Telegram.CommandHandlers
                 if (data > DateTime.Now)
                 {
                     message = "Oops.. You are trying to pick a future date..\nEnter another one";
-                    await PRTelegramBot.Helpers.Message.Edit(botClient, update, message);
-                    return;
+                }
+                else
+                {
+                    message = $"Picked date: <b>{data:dd.MM.yyyy}</b>";
+
+                    // caching the date
+                    var cache = update.GetCacheData<UserCache>();
+                    cache.DateT = data;
+                    CacheCommand.UpdateCache(update, cache.PersonName ?? "unknown", cache.DateT);
                 }
 
-                message = $"Picked date: <b>{data:dd.MM.yyyy}</b>";
-
                 await PRTelegramBot.Helpers.Message.Edit(botClient, update, message);
-
-                //caching date
-                var cache = update.GetCacheData<UserCache>();
-                cache.DateT = data;
-                CacheCommand.UpdateCache(update, cache.PersonName ?? "unknown", cache.DateT);
-
-                await ReminderBack.RemindPersonForBirthday(botClient, update);
             }
             catch (Exception ex)
             {

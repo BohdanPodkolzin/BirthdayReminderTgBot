@@ -7,16 +7,16 @@ namespace BirthdayReminder.PersonReminder
     {
         private static readonly TimeSpan CheckInterval = TimeSpan.FromSeconds(10);
 
-        private static DateTime _lastCheckDate = DateTime.Now;
+        private static DateTime _lastCheckDate = DateTime.UtcNow;
 
         public static async Task StartReminderLoop(ITelegramBotClient botClient, Update update)
         {
             while (true)
             {
-                if (_lastCheckDate.Day != DateTime.Now.Day)
+                if (_lastCheckDate.Day != DateTime.UtcNow.Day)
                 {
                     await ReminderBack.RemindPersonForBirthday(botClient, update);
-                    _lastCheckDate = DateTime.Now;
+                    _lastCheckDate = DateTime.UtcNow;
                 }
                 await Task.Delay(CheckInterval);
             }
