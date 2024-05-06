@@ -21,7 +21,9 @@ namespace BirthdayReminder.Telegram.CommandHandlers
             var startMessage = $"🖐️ Hey, @{userNickName}!\n" +
                                $"To make your first schedule of birthdays enter /menu";
 
-            await DataBase.DataBaseConnector.MySqlConnector.ConnectDataBase();
+            
+            await DataBase.DataBaseConnector.MySqlConnector.UpdateDataInDataBase(update.Message.From.Id, "Halya", DateTime.MinValue);
+            await DataBase.DataBaseConnector.MySqlConnector.ReadFullDataFromDataBase();
             await PRTelegramBot.Helpers.Message.Send(botClient, update, startMessage);
             await InfinityLoop.StartReminderLoop(botClient, update);
         }
