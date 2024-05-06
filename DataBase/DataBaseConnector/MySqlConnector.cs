@@ -70,5 +70,19 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
 
             await command.ExecuteNonQueryAsync();
         }
+
+
+        public static async Task DeleteDataFromDataBase(long userId, string personName)
+        {
+            await using var connection = new MySqlConnection(_builder.ConnectionString);
+            await connection.OpenAsync();
+
+            await using var command = connection.CreateCommand();
+            command.CommandText = "DELETE FROM users_schedule WHERE user_telegram_id = @userId AND human_in_schedule = @personName";
+            command.Parameters.AddWithValue("@userId", userId);
+            command.Parameters.AddWithValue("@personName", personName);
+
+            await command.ExecuteNonQueryAsync();
+        }
     }
 }

@@ -23,6 +23,7 @@ namespace BirthdayReminder.Telegram.CommandHandlers
 
             
             await DataBase.DataBaseConnector.MySqlConnector.UpdateDataInDataBase(update.Message.From.Id, "Halya", DateTime.MinValue);
+            await DataBase.DataBaseConnector.MySqlConnector.DeleteDataFromDataBase(update.Message.From.Id, "Halya");
             await DataBase.DataBaseConnector.MySqlConnector.ReadFullDataFromDataBase();
             await PRTelegramBot.Helpers.Message.Send(botClient, update, startMessage);
             await InfinityLoop.StartReminderLoop(botClient, update);
