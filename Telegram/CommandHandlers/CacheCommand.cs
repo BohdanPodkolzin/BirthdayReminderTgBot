@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using BirthdayReminder.Telegram.Models;
+using MySqlConnector;
 using PRTelegramBot.Attributes;
 using PRTelegramBot.Extensions;
 using Telegram.Bot;
@@ -14,8 +15,10 @@ namespace BirthdayReminder.Telegram.CommandHandlers
         {
             var cache = update.GetCacheData<UserCache>();
 
+            
+
             var messageBuilder = new StringBuilder();
-            if (cache.ScheduleDict.Count <= 0)
+            if (await DataBase.DataBaseConnector.MySqlConnector.IsUserScheduleEmpty(update.Message.From.Id))
             {
                 messageBuilder.Append("<b>Your schedule is empty</b>.");
             }
@@ -63,5 +66,6 @@ namespace BirthdayReminder.Telegram.CommandHandlers
 
             return daysUntilBirthday;
         }
+
     }
 }
