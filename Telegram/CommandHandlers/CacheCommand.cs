@@ -1,10 +1,10 @@
 ﻿using System.Text;
 using BirthdayReminder.Telegram.Models;
-using MySqlConnector;
 using PRTelegramBot.Attributes;
 using PRTelegramBot.Extensions;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using static BirthdayReminder.DataBase.DataBaseConnector.MySqlConnector;
 
 namespace BirthdayReminder.Telegram.CommandHandlers
 {
@@ -13,18 +13,20 @@ namespace BirthdayReminder.Telegram.CommandHandlers
         [ReplyMenuHandler("Show Countdown")]
         public static async Task CheckCache(ITelegramBotClient botClient, Update update)
         {
-            var cache = update.GetCacheData<UserCache>();
+            if (update.Message?.From == null)
+            {
+                return;
+            }
 
             var messageBuilder = new StringBuilder();
-            if (await DataBase.DataBaseConnector.MySqlConnector.IsUserScheduleEmpty(update.Message.From.Id))
+            if (await IsUserScheduleEmpty(update.Message.From.Id))
             {
                 messageBuilder.Append("<b>Your schedule is empty</b>.");
             }
             else
             {
+                var dataFromDataBase = await GetData(update.Message.From.Id);
                 messageBuilder.Append("<b>Birthdays schedule</b>\n");
-
-                var dataFromDataBase = await DataBase.DataBaseConnector.MySqlConnector.GetData(update.Message.From.Id);
 
                 foreach (var person in dataFromDataBase)
                 {
@@ -46,12 +48,6 @@ namespace BirthdayReminder.Telegram.CommandHandlers
             await PRTelegramBot.Helpers.Message.Send(botClient, update, messageBuilder.ToString());
         }
 
-        public static void UpdateCache(Update update, string name, DateTime date)
-        {
-            var cache = update.GetCacheData<UserCache>();
-            cache.ScheduleDict[name] = date;
-        }
-
         private static int GetDaysUntilBirthday(DateTime birthday)
         {
             var currentDate = DateTime.Today;
@@ -66,6 +62,12 @@ namespace BirthdayReminder.Telegram.CommandHandlers
             var daysUntilBirthday = (int)difference.TotalDays;
 
             return daysUntilBirthday;
+        }
+
+        public static void UpdateCache(Update update, string name, DateTime date)
+        {
+            var cache = update.GetCacheData<UserCache>();
+            cache.ScheduleDict[name] = date;
         }
 
     }

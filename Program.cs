@@ -1,5 +1,6 @@
-﻿using PRTelegramBot.Core;
-using tg;
+﻿using BirthdayReminder;
+using PRTelegramBot.Core;
+
 
 const string exit = "exit";
 

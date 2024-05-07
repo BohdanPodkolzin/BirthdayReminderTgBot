@@ -3,7 +3,7 @@ using Telegram.Bot.Types;
 
 namespace BirthdayReminder.DataBase.DataBaseConnector
 {
-    public class MySqlConnector
+    public static class MySqlConnector
     {
         private static readonly MySqlConnectionStringBuilder _builder = new()
         {
@@ -31,7 +31,9 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
                         reader.GetInt32(0),
                         reader.GetInt64(1),
                         reader.GetString(2),
-                        reader.GetDateTime(3)
+                        reader.IsDBNull(3)
+                            ? DateTime.MinValue
+                            : reader.GetDateTime(3)
                     );
                 }
             }
@@ -110,6 +112,7 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
 
             await using var connection = new MySqlConnection(_builder.ConnectionString);
             await connection.OpenAsync();
+            await RemovePeopleWithoutDate(userId, connection);
 
             await using var command = connection.CreateCommand();
             command.CommandText = "SELECT id, user_telegram_id, human_in_schedule, bday_date FROM users_schedule " +
@@ -125,14 +128,29 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
                         Id = reader.GetInt32(0),
                         TelegramId = reader.GetInt64(1),
                         Name = reader.GetString(2),
-                        BirthdayDate = reader.GetDateTime(3)
+                        BirthdayDate = reader.IsDBNull(3) 
+                            ? DateTime.MinValue 
+                            : reader.GetDateTime(3)
                     };
 
                     humanDataList.Add(humanData);
+                    
                 }
             }
 
             return humanDataList;
+        }
+
+        private static async Task RemovePeopleWithoutDate(long userId, MySqlConnection connection)
+        {
+            await using var command = connection.CreateCommand();
+            command.CommandText = "DELETE FROM users_schedule " +
+                                  "WHERE user_telegram_id = @userId " +
+                                  "AND (bday_date IS NULL OR bday_date = @minimalDate)";
+            command.Parameters.AddWithValue("@minimalDate", DateTime.MinValue);
+            command.Parameters.AddWithValue("@userId", userId);
+
+            await command.ExecuteNonQueryAsync();
         }
 
 
