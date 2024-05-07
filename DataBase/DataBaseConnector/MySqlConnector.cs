@@ -104,26 +104,27 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
             }
         }
 
-        public static async Task<List<HumanInDataBase>> GetData()
+        public static async Task<List<PersonInDataBase>> GetData(long userId)
         {
-            var humanDataList = new List<HumanInDataBase>();
+            var humanDataList = new List<PersonInDataBase>();
 
             await using var connection = new MySqlConnection(_builder.ConnectionString);
             await connection.OpenAsync();
 
             await using var command = connection.CreateCommand();
             command.CommandText = "SELECT id, user_telegram_id, human_in_schedule, bday_date FROM users_schedule " +
-                                  "WHERE user_telegram_id = @userId";
+                                   "WHERE user_telegram_id = @userId";
+            command.Parameters.AddWithValue("@userId", userId);
 
             await using (var reader = await command.ExecuteReaderAsync())
             {
                 while (await reader.ReadAsync())
                 {
-                    var humanData = new HumanInDataBase
+                    var humanData = new PersonInDataBase
                     {
                         Id = reader.GetInt32(0),
                         TelegramId = reader.GetInt64(1),
-                        HumanInSchedule = reader.GetString(2),
+                        Name = reader.GetString(2),
                         BirthdayDate = reader.GetDateTime(3)
                     };
 

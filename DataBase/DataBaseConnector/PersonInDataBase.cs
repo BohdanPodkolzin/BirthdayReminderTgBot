@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace BirthdayReminder.DataBase.DataBaseConnector
 {
-    public class HumanInDataBase
+    public class PersonInDataBase
     {
         public int Id { get; set; }
         public long TelegramId { get; set; }
-        public required string HumanInSchedule { get; set; }
+        public required string Name { get; set; }
         public DateTime BirthdayDate { get; set; }
     }
 }

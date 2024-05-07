@@ -15,8 +15,6 @@ namespace BirthdayReminder.Telegram.CommandHandlers
         {
             var cache = update.GetCacheData<UserCache>();
 
-            
-
             var messageBuilder = new StringBuilder();
             if (await DataBase.DataBaseConnector.MySqlConnector.IsUserScheduleEmpty(update.Message.From.Id))
             {
@@ -25,13 +23,16 @@ namespace BirthdayReminder.Telegram.CommandHandlers
             else
             {
                 messageBuilder.Append("<b>Birthdays schedule</b>\n");
-                foreach (var user in cache.ScheduleDict)
+
+                var dataFromDataBase = await DataBase.DataBaseConnector.MySqlConnector.GetData(update.Message.From.Id);
+
+                foreach (var person in dataFromDataBase)
                 {
-                    var daysUntilBirthday = GetDaysUntilBirthday(user.Value);
+                    var daysUntilBirthday = GetDaysUntilBirthday(person.BirthdayDate);
                     messageBuilder
                         .AppendLine()
-                        .AppendLine($"· <b>{user.Key}</b>, " +
-                                    $"{user.Value.ToString("dd.MM.yyyy")} " +
+                        .AppendLine($"· <b>{person.Name}</b>, " +
+                                    $"{person.BirthdayDate.ToString("dd.MM.yyyy")} " +
                                     $"{GetCountdownPart(daysUntilBirthday)}"
                         );
                 }
