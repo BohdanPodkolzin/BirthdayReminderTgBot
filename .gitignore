@@ -5,7 +5,6 @@
 
 
 #Config Files
-BotCfg.cs
 appsettings.json
 
 # dotenv files

@@ -50,6 +50,19 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
             await command.ExecuteNonQueryAsync();
         }
 
+        public static async Task InsertPersonName(long userId, string personName)
+        {
+            await using var connection = new MySqlConnection(ConnectionString);
+            await connection.OpenAsync();
+
+            await using var command = connection.CreateCommand();
+            command.CommandText = "INSERT INTO users_schedule (user_telegram_id, human_in_schedule) VALUES (@userId, @personName)";
+            command.Parameters.AddWithValue("@userId", userId);
+            command.Parameters.AddWithValue("@personName", personName);
+
+            await command.ExecuteNonQueryAsync();
+        }
+
         public static async Task UpdateData(long userId, string personName, DateTime date)
         {
             await using var connection = new MySqlConnection(BotConfiguration.GetConnectionString());
@@ -84,7 +97,8 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
             await connection.OpenAsync();
 
             await using var command = connection.CreateCommand();
-            command.CommandText = "SELECT user_telegram_id, human_in_schedule, bday_date FROM users_schedule WHERE user_telegram_id = @userId";
+            command.CommandText = "SELECT user_telegram_id, human_in_schedule, bday_date FROM users_schedule " +
+                                  "WHERE user_telegram_id = @userId";
             command.Parameters.AddWithValue("@userId", userId);
 
             await using (var reader = await command.ExecuteReaderAsync())

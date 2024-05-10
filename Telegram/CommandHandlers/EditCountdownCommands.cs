@@ -8,6 +8,7 @@ using PRTelegramBot.Models;
 using PRTelegramBot.Models.InlineButtons;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using static BirthdayReminder.DataBase.DataBaseConnector.MySqlConnector;
 
 namespace BirthdayReminder.Telegram.CommandHandlers
 {
@@ -30,7 +31,8 @@ namespace BirthdayReminder.Telegram.CommandHandlers
                 const string message = "Enter the name of the person";
                 await PRTelegramBot.Helpers.Message.Edit(botClient, update, message);
 
-                update.RegisterStepHandler(new StepTelegram(CreateEventStepTwo, GetUserCache(update)));
+                update.RegisterStepHandler(new StepTelegram(CreateEventStepTwo));
+
             }
             catch (Exception ex)
             {
@@ -40,12 +42,22 @@ namespace BirthdayReminder.Telegram.CommandHandlers
 
         private static async Task CreateEventStepTwo(ITelegramBotClient botClient, Update update)
         {
-            var message = $"Entered name <b>{update.Message?.Text}</b>";
-            await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+            var personName = update.Message?.Text;
 
-            await CalendarCommandHandlers.PickCalendar(botClient, update);
+            if (personName != null)
+            {
+                var message = $"Entered name <b>{update.Message?.Text}</b>";
 
-            GetUserCache(update).PersonName = update.Message?.Text;
+                await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+
+                await CalendarCommandHandlers.PickCalendar(botClient, update);
+
+                if (update.Message is { From: not null })
+                {
+                    await InsertPersonName(update.Message.From.Id, personName);
+                }
+            }
+
         }
 
 
