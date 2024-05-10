@@ -8,10 +8,10 @@ using static BirthdayReminder.DataBase.DataBaseConnector.MySqlConnector;
 
 namespace BirthdayReminder.Telegram.CommandHandlers
 {
-    public static class CacheCommand
+    public static class ShowCountdownCommandHandlers
     {
         [ReplyMenuHandler("Show Countdown")]
-        public static async Task CheckCache(ITelegramBotClient botClient, Update update)
+        public static async Task ShowCountdownMethod(ITelegramBotClient botClient, Update update)
         {
             if (update.Message?.From == null)
             {

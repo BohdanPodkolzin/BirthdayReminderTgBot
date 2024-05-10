@@ -1,4 +1,5 @@
 ﻿using BirthdayReminder.DependencyInjectionConfiguration;
+using BirthdayReminder.MySqlDataBase.DataBaseConnector;
 using Microsoft.Extensions.Configuration;
 using MySqlConnector;
 using Telegram.Bot.Types;
@@ -106,11 +107,22 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
                     };
 
                     humanDataList.Add(humanData);
-                    
                 }
             }
 
             return humanDataList;
+        }
+
+        public static async Task RemoveAllRecords(long userId)
+        {
+            await using var connection = new MySqlConnection(ConnectionString);
+            await connection.OpenAsync();
+
+            await using var command = connection.CreateCommand();
+            command.CommandText = "DELETE FROM users_schedule WHERE user_telegram_id = @userId";
+            command.Parameters.AddWithValue("@userId", userId);
+
+            await command.ExecuteNonQueryAsync();
         }
 
         public static async Task RemoveInvalidRecords()

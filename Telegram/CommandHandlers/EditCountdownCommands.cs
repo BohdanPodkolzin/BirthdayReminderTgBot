@@ -120,8 +120,14 @@ namespace BirthdayReminder.Telegram.CommandHandlers
         [InlineCallbackHandler<ConfirmationInlineCommandTHeader>(ConfirmationInlineCommandTHeader.Yes)]
         public static async Task ResetAllEvents(ITelegramBotClient botClient, Update update)
         {
+            if (update.CallbackQuery?.Message?.From == null)
+            {
+                return;
+            }
+
+            await RemoveAllRecords(update.CallbackQuery.From.Id);
+
             const string message = "Countdowns has been successfully removed!";
-            update.GetCacheData<UserCache>().ClearData();
 
             var chatId = update.GetChatId();
             var messageId = update.GetMessageId();
@@ -132,6 +138,8 @@ namespace BirthdayReminder.Telegram.CommandHandlers
                 text: message
             );
         }
+
+
 
         [InlineCallbackHandler<ConfirmationInlineCommandTHeader>(ConfirmationInlineCommandTHeader.No)]
         public static async Task BackToEditCountdown(ITelegramBotClient botClient, Update update)

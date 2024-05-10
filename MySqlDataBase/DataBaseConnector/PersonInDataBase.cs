@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BirthdayReminder.DataBase.DataBaseConnector
+namespace BirthdayReminder.MySqlDataBase.DataBaseConnector
 {
     public class PersonInDataBase
     {
