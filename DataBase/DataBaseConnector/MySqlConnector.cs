@@ -1,4 +1,4 @@
-﻿using BirthdayReminder.DataBase.DependencyInjectionDataBaseConfig;
+﻿using BirthdayReminder.DependencyInjectionConfiguration;
 using Microsoft.Extensions.Configuration;
 using MySqlConnector;
 using Telegram.Bot.Types;
@@ -7,10 +7,10 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
 {
     public static class MySqlConnector
     {
-        private static readonly string _connectionString = BotConfiguration.GetConnectionString();
+        private static readonly string? ConnectionString = BotConfiguration.GetConnectionString();
         public static async Task ReadFullData()
         {
-            await using var connection = new MySqlConnection(_connectionString);
+            await using var connection = new MySqlConnection(ConnectionString);
             Console.WriteLine("Opening Connection");
             await connection.OpenAsync();
 
@@ -38,7 +38,7 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
 
         public static async Task InsertData(long userId, string personName, DateTime date)
         {
-            await using var connection = new MySqlConnection(_connectionString);
+            await using var connection = new MySqlConnection(ConnectionString);
             await connection.OpenAsync();
 
             await using var command = connection.CreateCommand();
@@ -67,7 +67,7 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
 
         public static async Task DeleteData(long userId, string personName)
         {
-            await using var connection = new MySqlConnection(_connectionString);
+            await using var connection = new MySqlConnection(ConnectionString);
             await connection.OpenAsync();
 
             await using var command = connection.CreateCommand();
@@ -80,7 +80,7 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
 
         public static async Task ReadUserData(long userId)
         {
-            await using var connection = new MySqlConnection(_connectionString);
+            await using var connection = new MySqlConnection(ConnectionString);
             await connection.OpenAsync();
 
             await using var command = connection.CreateCommand();
@@ -105,7 +105,7 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
         {
             var humanDataList = new List<PersonInDataBase>();
 
-            await using var connection = new MySqlConnection(_connectionString);
+            await using var connection = new MySqlConnection(ConnectionString);
             await connection.OpenAsync();
             await RemovePeopleWithoutDate(userId, connection);
 
@@ -151,7 +151,7 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
 
         public static async Task<bool> IsUserScheduleEmpty(long userId)
         {
-            await using var connection = new MySqlConnection(_connectionString);
+            await using var connection = new MySqlConnection(ConnectionString);
             await connection.OpenAsync();
 
             await using var command = connection.CreateCommand();
