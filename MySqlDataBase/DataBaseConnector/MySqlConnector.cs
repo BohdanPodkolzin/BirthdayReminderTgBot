@@ -63,6 +63,7 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
             await command.ExecuteNonQueryAsync();
         }
 
+
         public static async Task UpdateData(long userId, string personName, DateTime date)
         {
             await using var connection = new MySqlConnection(BotConfiguration.GetConnectionString());
@@ -121,7 +122,6 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
 
             await using var connection = new MySqlConnection(ConnectionString);
             await connection.OpenAsync();
-            await RemovePeopleWithoutDate(userId, connection);
 
             await using var command = connection.CreateCommand();
             command.CommandText = "SELECT id, user_telegram_id, human_in_schedule, bday_date FROM users_schedule " +
@@ -150,8 +150,11 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
             return humanDataList;
         }
 
-        private static async Task RemovePeopleWithoutDate(long userId, MySqlConnection connection)
+        public static async Task RemovePeopleWithoutDate(long userId)
         {
+            await using var connection = new MySqlConnection(ConnectionString);
+            await connection.OpenAsync();
+
             await using var command = connection.CreateCommand();
             command.CommandText = "DELETE FROM users_schedule " +
                                   "WHERE user_telegram_id = @userId " +

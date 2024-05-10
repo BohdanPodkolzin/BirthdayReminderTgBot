@@ -31,8 +31,7 @@ namespace BirthdayReminder.Telegram.CommandHandlers
                 const string message = "Enter the name of the person";
                 await PRTelegramBot.Helpers.Message.Edit(botClient, update, message);
 
-                update.RegisterStepHandler(new StepTelegram(CreateEventStepTwo));
-
+                update.RegisterStepHandler(new StepTelegram(CreateEventStepTwo, GetUserCache(update)));
             }
             catch (Exception ex)
             {
@@ -43,19 +42,14 @@ namespace BirthdayReminder.Telegram.CommandHandlers
         private static async Task CreateEventStepTwo(ITelegramBotClient botClient, Update update)
         {
             var personName = update.Message?.Text;
-
+            
             if (personName != null)
             {
+                GetUserCache(update).PersonName = personName;
+
                 var message = $"Entered name <b>{update.Message?.Text}</b>";
-
                 await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
-
                 await CalendarCommandHandlers.PickCalendar(botClient, update);
-
-                if (update.Message is { From: not null })
-                {
-                    await InsertPersonName(update.Message.From.Id, personName);
-                }
             }
 
         }

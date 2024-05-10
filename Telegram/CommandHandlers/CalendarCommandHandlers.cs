@@ -8,6 +8,8 @@ using PRTelegramBot.Models.InlineButtons;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using THeader = PRTelegramBot.Models.Enums.THeader;
+using static BirthdayReminder.DataBase.DataBaseConnector.MySqlConnector;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BirthdayReminder.Telegram.CommandHandlers
 {
@@ -49,24 +51,26 @@ namespace BirthdayReminder.Telegram.CommandHandlers
 
             try
             {
-                string message;
                 var command = InlineCallback<CalendarTCommand>
                     .GetCommandByCallbackOrNull(update.CallbackQuery.Data);
 
-                var data = command.Data.Date;
+                var birthdayDate = command.Data.Date;
+                string message;
 
-                if (data > DateTime.Now)
+                if (birthdayDate > DateTime.UtcNow)
                 {
                     message = "Oops.. You are trying to pick a future date..\nEnter another one";
                 }
                 else
                 {
-                    message = $"Picked date: <b>{data:dd.MM.yyyy}</b>";
+                    message = $"Picked date: <b>{birthdayDate:dd.MM.yyyy}</b>";
 
-                    // caching the date
+                    // storage data into DB
                     var cache = update.GetCacheData<UserCache>();
-                    cache.DateT = data;
-                    CacheCommand.UpdateCache(update, cache.PersonName ?? "unknown", cache.DateT);
+                    await InsertData(update.CallbackQuery.From.Id, cache.PersonName ?? "unknown", birthdayDate);
+
+                    cache.ClearData();
+                    update.ClearStepUserHandler();
                 }
 
                 await PRTelegramBot.Helpers.Message.Edit(botClient, update, message);

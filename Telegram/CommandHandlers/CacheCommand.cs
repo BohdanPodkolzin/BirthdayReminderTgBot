@@ -18,6 +18,8 @@ namespace BirthdayReminder.Telegram.CommandHandlers
                 return;
             }
 
+            await RemovePeopleWithoutDate(update.Message.From.Id);
+
             var messageBuilder = new StringBuilder();
             if (await IsUserScheduleEmpty(update.Message.From.Id))
             {
@@ -63,12 +65,5 @@ namespace BirthdayReminder.Telegram.CommandHandlers
 
             return daysUntilBirthday;
         }
-
-        public static void UpdateCache(Update update, string name, DateTime date)
-        {
-            var cache = update.GetCacheData<UserCache>();
-            cache.ScheduleDict[name] = date;
-        }
-
     }
 }
