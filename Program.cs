@@ -1,4 +1,5 @@
 ﻿using BirthdayReminder;
+using BirthdayReminder.DataBase.DependencyInjectionDataBaseConfig;
 using PRTelegramBot.Core;
 
 
@@ -9,9 +10,11 @@ var tgBot = new PRBot(option =>
     option.BotId = 0;
     option.Admins = [];
     option.WhiteListUsers = [];
-    option.Token = BotCfg.Token;
+    option.Token = BotConfiguration.GetBotToken();
     option.ClearUpdatesOnStart = true;
 });
+
+
 
 tgBot.OnLogCommon += TgBotOnLogCommon;
 tgBot.OnLogError += TgBotOnLogError;
