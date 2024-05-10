@@ -67,7 +67,7 @@ namespace BirthdayReminder.Telegram.CommandHandlers
 
                     // storage data into DB
                     var cache = update.GetCacheData<UserCache>();
-                    await InsertData(update.CallbackQuery.From.Id, cache.PersonName ?? "unknown", birthdayDate);
+                    await InsertRecordByNameAndDate(update.CallbackQuery.From.Id, cache.PersonName ?? "unknown", birthdayDate);
 
                     cache.ClearData();
                     update.ClearStepUserHandler();

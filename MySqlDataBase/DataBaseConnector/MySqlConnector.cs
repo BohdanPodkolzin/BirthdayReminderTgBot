@@ -9,7 +9,7 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
     public static class MySqlConnector
     {
         private static readonly string? ConnectionString = BotConfiguration.GetConnectionString();
-        public static async Task ReadFullData()
+        public static async Task ReadAllRecords()
         {
             await using var connection = new MySqlConnection(ConnectionString);
             Console.WriteLine("Opening Connection");
@@ -37,13 +37,14 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
             Console.WriteLine("Closing connection");
         }
 
-        public static async Task InsertData(long userId, string personName, DateTime date)
+        public static async Task InsertRecordByNameAndDate(long userId, string personName, DateTime date)
         {
             await using var connection = new MySqlConnection(ConnectionString);
             await connection.OpenAsync();
 
             await using var command = connection.CreateCommand();
-            command.CommandText = "INSERT INTO users_schedule (user_telegram_id, human_in_schedule, bday_date) VALUES (@userId, @personName, @date)";
+            command.CommandText = 
+                "INSERT INTO users_schedule (user_telegram_id, human_in_schedule, bday_date) VALUES (@userId, @personName, @date)";
             command.Parameters.AddWithValue("@userId", userId);
             command.Parameters.AddWithValue("@personName", personName);
             command.Parameters.AddWithValue("@date", date);
@@ -51,7 +52,7 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
             await command.ExecuteNonQueryAsync();
         }
 
-        public static async Task UpdateData(long userId, string personName, DateTime date)
+        public static async Task UpdateRecordByNameAndDate(long userId, string personName, DateTime date)
         {
             await using var connection = new MySqlConnection(BotConfiguration.GetConnectionString());
             await connection.OpenAsync();
@@ -67,20 +68,39 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
         }
 
 
-        public static async Task DeleteData(long userId, string personName)
+        public static async Task RemoveRecordByName(long userId, string? personName)
         {
             await using var connection = new MySqlConnection(ConnectionString);
             await connection.OpenAsync();
 
             await using var command = connection.CreateCommand();
-            command.CommandText = "DELETE FROM users_schedule WHERE user_telegram_id = @userId AND human_in_schedule = @personName";
+            command.CommandText = 
+                "DELETE FROM users_schedule WHERE user_telegram_id = @userId AND human_in_schedule = @personName";
             command.Parameters.AddWithValue("@userId", userId);
             command.Parameters.AddWithValue("@personName", personName);
 
             await command.ExecuteNonQueryAsync();
         }
 
+        public static async Task<bool> IsRecordExist(long userId, string? personName)
+        {
+            await using var connection = new MySqlConnection(ConnectionString);
+            await connection.OpenAsync();
+
+            await using var command = connection.CreateCommand();
+            command.CommandText =
+                "SELECT COUNT(*) FROM users_schedule WHERE user_telegram_id = @userId AND human_in_schedule";
+            command.Parameters.AddWithValue("@userId", userId);
+            command.Parameters.AddWithValue("@personName", personName);
+
+            var result = await command.ExecuteScalarAsync();
+            var count = Convert.ToInt32(result);
+
+            return count != 0;
+        }
+
         public static async Task<List<PersonInDataBase>> GetData(long userId)
+
         {
             var humanDataList = new List<PersonInDataBase>();
 
@@ -119,7 +139,8 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
             await connection.OpenAsync();
 
             await using var command = connection.CreateCommand();
-            command.CommandText = "DELETE FROM users_schedule WHERE user_telegram_id = @userId";
+            command.CommandText =
+                "DELETE FROM users_schedule WHERE user_telegram_id = @userId";
             command.Parameters.AddWithValue("@userId", userId);
 
             await command.ExecuteNonQueryAsync();
@@ -146,7 +167,8 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
             await connection.OpenAsync();
 
             await using var command = connection.CreateCommand();
-            command.CommandText = "SELECT COUNT(*) FROM users_schedule WHERE user_telegram_id = @userId";
+            command.CommandText =
+                "SELECT COUNT(*) FROM users_schedule WHERE user_telegram_id = @userId";
             command.Parameters.AddWithValue("@userId", userId);
 
             var result = await command.ExecuteScalarAsync();
