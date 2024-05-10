@@ -18,7 +18,7 @@ namespace BirthdayReminder.Telegram.CommandHandlers
                 return;
             }
 
-            await RemovePeopleWithoutDate(update.Message.From.Id);
+            await RemoveInvalidRecords();
 
             var messageBuilder = new StringBuilder();
             if (await IsUserScheduleEmpty(update.Message.From.Id))
