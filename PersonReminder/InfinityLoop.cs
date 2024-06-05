@@ -13,11 +13,11 @@ namespace BirthdayReminder.PersonReminder
         {
             while (true)
             {
-                if (_lastCheckDate.Day != DateTime.UtcNow.Day)
-                {
+                //if (_lastCheckDate.Day != DateTime.UtcNow.Day)
+                //{
                     await ReminderBack.RemindPersonForBirthday(botClient, update);
                     _lastCheckDate = DateTime.UtcNow;
-                }
+                //}
                 await Task.Delay(CheckInterval);
             }
         }
