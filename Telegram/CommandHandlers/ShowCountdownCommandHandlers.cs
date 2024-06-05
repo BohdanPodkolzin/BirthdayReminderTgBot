@@ -4,7 +4,7 @@ using PRTelegramBot.Attributes;
 using PRTelegramBot.Extensions;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using static BirthdayReminder.DataBase.DataBaseConnector.MySqlConnector;
+using static BirthdayReminder.DataBase.DataBaseConnector.Queries;
 
 namespace BirthdayReminder.Telegram.CommandHandlers
 {

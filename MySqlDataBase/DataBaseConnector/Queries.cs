@@ -1,11 +1,18 @@
 ﻿using BirthdayReminder.DependencyInjectionConfiguration;
 using BirthdayReminder.MySqlDataBase.DataBaseConnector;
-using Microsoft.Extensions.Configuration;
 using MySqlConnector;
-using Telegram.Bot.Types;
+
 
 namespace BirthdayReminder.DataBase.DataBaseConnector
 {
+    public enum Input
+    {
+        UserId = 1,
+        UserIdName,
+        UserIdDate,
+        UserIdNameDate
+    }
+    
     public static class Queries
     {
         private static readonly string? ConnectionString = BotConfiguration.GetConnectionString();
@@ -38,7 +45,7 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
             await using var command = await GetCommandAsync(connection,
                 "INSERT INTO users_schedule (user_telegram_id, human_in_schedule, bday_date) VALUES (@userId, @personName, @date)");
             
-            AddParametersByInput(command, 1, userId, personName, date);
+            AddParametersByInput(command, Input.UserIdNameDate, userId, personName, date);
             await command.ExecuteNonQueryAsync();
         }
 
@@ -49,7 +56,7 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
                 "UPDATE users_schedule SET bday_date = @date " +
                 "WHERE user_telegram_id = @userId AND human_in_schedule = @personName");
             
-            AddParametersByInput(command, 1, userId, personName, date);
+            AddParametersByInput(command, Input.UserIdNameDate, userId, personName, date);
             await command.ExecuteNonQueryAsync();
         }
 
@@ -59,7 +66,7 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
             await using var command = await GetCommandAsync(connection,
                 "DELETE FROM users_schedule WHERE user_telegram_id = @userId AND human_in_schedule = @personName");
 
-            AddParametersByInput(command, 2, userId, personName);
+            AddParametersByInput(command, Input.UserIdName, userId, personName);
             await command.ExecuteNonQueryAsync();
         }
 
@@ -69,7 +76,7 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
             await using var command = await GetCommandAsync(connection,
                 "SELECT COUNT(*) FROM users_schedule WHERE user_telegram_id = @userId AND human_in_schedule");
 
-            AddParametersByInput(command, 2, userId, personName);
+            AddParametersByInput(command, Input.UserIdName, userId, personName);
             var result = await command.ExecuteScalarAsync();
             var count = Convert.ToInt32(result);
 
@@ -83,13 +90,13 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
                 "SELECT id, user_telegram_id, human_in_schedule, bday_date FROM users_schedule " +
                 "WHERE user_telegram_id = @userId");
             
-            AddParametersByInput(command, 3, userId);
+            AddParametersByInput(command, Input.UserId, userId);
             var dataset = new List<PersonInDataBase>();
             await using (var reader = await command.ExecuteReaderAsync())
             {
                 while (await reader.ReadAsync())
                 {
-                    var humanData = new PersonInDataBase
+                    var recordObj = new PersonInDataBase
                     {
                         Id = reader.GetInt32(0),
                         TelegramId = reader.GetInt64(1),
@@ -99,7 +106,7 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
                             : reader.GetDateTime(3)
                     };
 
-                    dataset.Add(humanData);
+                    dataset.Add(recordObj);
                 }
             }
 
@@ -112,7 +119,7 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
             await using var command = await GetCommandAsync(connection,
                 "DELETE FROM users_schedule WHERE user_telegram_id = @userId");
 
-            AddParametersByInput(command, 3, userId);
+            AddParametersByInput(command, Input.UserId, userId);
             await command.ExecuteNonQueryAsync();
         }
 
@@ -134,7 +141,7 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
             await using var command = await GetCommandAsync(connection,
                 "SELECT COUNT(*) FROM users_schedule WHERE user_telegram_id = @userId");
 
-            AddParametersByInput(command, 3, userId);
+            AddParametersByInput(command, Input.UserId, userId);
             var result = await command.ExecuteScalarAsync();
             var count = Convert.ToInt32(result);
 
@@ -157,28 +164,26 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
             return await Task.FromResult(command);
         }
 
-        public static void AddParametersByInput(MySqlCommand command, int input, long userId, string? personName = null, DateTime? date = null)
+        public static void AddParametersByInput(MySqlCommand command, Input input, long userId, string? personName = null, DateTime? date = null)
         {
             switch (input)
             {
-                case 1:
-                {
+                case Input.UserId:
+                    command.Parameters.AddWithValue("@userId", userId);
+                    break;
+                case Input.UserIdName:
+                    command.Parameters.AddWithValue("@userId", userId);
+                    command.Parameters.AddWithValue("@personName", personName);
+                    break;
+                case Input.UserIdDate:
+                    command.Parameters.AddWithValue("@userId", userId);
+                    command.Parameters.AddWithValue("@date", date);
+                    break;
+                case Input.UserIdNameDate:
                     command.Parameters.AddWithValue("@userId", userId);
                     command.Parameters.AddWithValue("@personName", personName);
                     command.Parameters.AddWithValue("@date", date);
                     break;
-                }
-                case 2:
-                {
-                    command.Parameters.AddWithValue("@userId", userId);
-                    command.Parameters.AddWithValue("@personName", personName);
-                    break;
-                }
-                case 3:
-                {
-                    command.Parameters.AddWithValue("@userId", userId);
-                    break;
-                }
                 default:
                     throw new ArgumentException("Invalid input for adding parameters");
             }
