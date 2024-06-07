@@ -1,5 +1,6 @@
 ﻿using BirthdayReminder.DependencyInjectionConfiguration;
 using BirthdayReminder.MySqlDataBase.DataBaseConnector;
+using Microsoft.Extensions.Logging;
 using MySqlConnector;
 
 
@@ -19,23 +20,22 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
 
         public static async Task ReadAllRecords()
         {
+
             await using var connection = await GetOpenConnectionAsync();
             await using var command = await GetCommandAsync(connection, "SELECT * FROM users_schedule");
 
-            await using (var reader = await command.ExecuteReaderAsync())
+            await using var reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
             {
-                while (await reader.ReadAsync())
-                {
-                    Console.WriteLine(
-                        "Reading from table=({0}, {1}, {2}, {3:dd.MM.yyyy})",
-                        reader.GetInt32(0),
-                        reader.GetInt64(1),
-                        reader.GetString(2),
-                        reader.IsDBNull(3)
-                            ? DateTime.MinValue
-                            : reader.GetDateTime(3)
-                    );
-                }
+                Console.WriteLine(
+                    "Reading from table=({0}, {1}, {2}, {3:dd.MM.yyyy})",
+                    reader.GetInt32(0),
+                    reader.GetInt64(1),
+                    reader.GetString(2),
+                    reader.IsDBNull(3)
+                        ? DateTime.MinValue
+                        : reader.GetDateTime(3)
+                );
             }
         }
 
@@ -74,7 +74,7 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
         {
             await using var connection = await GetOpenConnectionAsync();
             await using var command = await GetCommandAsync(connection,
-                "SELECT COUNT(*) FROM users_schedule WHERE user_telegram_id = @userId AND human_in_schedule");
+                "SELECT COUNT(*) FROM users_schedule WHERE user_telegram_id = @userId AND human_in_schedule = @personName");
 
             AddParametersByInput(command, Input.UserIdName, userId, personName);
             var result = await command.ExecuteScalarAsync();
@@ -92,22 +92,38 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
             
             AddParametersByInput(command, Input.UserId, userId);
             var dataset = new List<PersonInDataBase>();
-            await using (var reader = await command.ExecuteReaderAsync())
-            {
-                while (await reader.ReadAsync())
-                {
-                    var recordObj = new PersonInDataBase
-                    {
-                        Id = reader.GetInt32(0),
-                        TelegramId = reader.GetInt64(1),
-                        Name = reader.GetString(2),
-                        BirthdayDate = reader.IsDBNull(3) 
-                            ? DateTime.MinValue 
-                            : reader.GetDateTime(3)
-                    };
 
-                    dataset.Add(recordObj);
-                }
+            await using var reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                var recordObj = new PersonInDataBase
+                {
+                    Id = reader.GetInt32(0),
+                    TelegramId = reader.GetInt64(1),
+                    Name = reader.GetString(2),
+                    BirthdayDate = reader.IsDBNull(3) 
+                        ? DateTime.MinValue 
+                        : reader.GetDateTime(3)
+                };
+
+                dataset.Add(recordObj);
+            }
+
+            return dataset;
+        }
+
+        public static async Task<List<long>> GetUsersIds()
+        {
+            await using var connection = await GetOpenConnectionAsync();
+            await using var command = await GetCommandAsync(connection,
+                "SELECT DISTINCT user_telegram_id FROM users_schedule");
+
+            var dataset = new List<long>();
+
+            await using var reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                dataset.Add(reader.GetInt64(0));
             }
 
             return dataset;

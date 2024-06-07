@@ -1,22 +1,16 @@
-﻿using BirthdayReminder.Telegram.Models;
-using PRTelegramBot.Extensions;
-using Telegram.Bot;
+﻿using Telegram.Bot;
 using Telegram.Bot.Types;
-using static BirthdayReminder.DataBase.DataBaseConnector.MySqlConnector;
+using static BirthdayReminder.DataBase.DataBaseConnector.Queries;
 
 namespace BirthdayReminder.PersonReminder
 {
     public static class ReminderBack
     {
-        public static async Task RemindPersonForBirthday(ITelegramBotClient botClient, Update update)
+        public static async Task RemindPersonForBirthday(ITelegramBotClient botClient, long update)
         {
             var currDate = DateTime.Today;
 
-            if (update.Message?.From == null)
-            {
-                return;
-            }
-            var dataFromDataBase = await GetData(update.Message.From.Id);
+            var dataFromDataBase = await GetData(update);
 
             foreach (var person in dataFromDataBase)
             {
