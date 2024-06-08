@@ -21,9 +21,9 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
 
         public static async Task ReadAllRecords()
         {
-            const string query = "SELECT * FROM users_schedule";
-            Logger?.LogQuery(query);
             await using var connection = await GetOpenConnectionAsync();
+
+            const string query = "SELECT * FROM users_schedule";
             await using var command = await GetCommandAsync(connection, query);
 
             await using var reader = await command.ExecuteReaderAsync();
@@ -39,6 +39,8 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
                         : reader.GetDateTime(3)
                 );
             }
+
+            Logger?.LogQuery(query);
         }
 
         public static async Task InsertRecordByNameAndDate(long userId, string personName, DateTime date)
@@ -137,7 +139,6 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
             await using var command = await GetCommandAsync(connection,
                 "DELETE FROM users_schedule WHERE user_telegram_id = @userId");
 
-            AddParametersByInput(command, Input.UserId, userId);
             await command.ExecuteNonQueryAsync();
         }
 
@@ -184,27 +185,40 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
 
         public static void AddParametersByInput(MySqlCommand command, Input input, long userId, string? personName = null, DateTime? date = null)
         {
+            var parameters = new Dictionary<string, object>();
             switch (input)
             {
                 case Input.UserId:
                     command.Parameters.AddWithValue("@userId", userId);
+                    parameters["@userId"] = userId;
                     break;
                 case Input.UserIdName:
                     command.Parameters.AddWithValue("@userId", userId);
                     command.Parameters.AddWithValue("@personName", personName);
+                    parameters["@userId"] = userId;
+                    parameters["@personName"] = personName ?? "unknown";
                     break;
                 case Input.UserIdDate:
                     command.Parameters.AddWithValue("@userId", userId);
                     command.Parameters.AddWithValue("@date", date);
+                    parameters["@userId"] = userId;
+                    parameters["@date"] = date ?? DateTime.MinValue;
                     break;
                 case Input.UserIdNameDate:
                     command.Parameters.AddWithValue("@userId", userId);
                     command.Parameters.AddWithValue("@personName", personName);
                     command.Parameters.AddWithValue("@date", date);
+                    parameters["@userId"] = userId;
+                    parameters["@personName"] = personName ?? "unknown";
+                    parameters["@date"] = date ?? DateTime.MinValue;
                     break;
                 default:
-                    throw new ArgumentException("Invalid input for adding parameters");
+                    Logger?.LogException(userId);
+                    return;
             }
+
+            Logger?.LogQuery(command.CommandText, parameters);
         }
     }
+
 }
