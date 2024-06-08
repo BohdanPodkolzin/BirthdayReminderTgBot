@@ -17,12 +17,14 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
     public static class Queries
     {
         private static readonly string? ConnectionString = BotConfiguration.GetConnectionString();
+        private static readonly SqlLoggerService? Logger = BotConfiguration.SqlLoggerService;
 
         public static async Task ReadAllRecords()
         {
-
+            const string query = "SELECT * FROM users_schedule";
+            Logger?.LogQuery(query);
             await using var connection = await GetOpenConnectionAsync();
-            await using var command = await GetCommandAsync(connection, "SELECT * FROM users_schedule");
+            await using var command = await GetCommandAsync(connection, query);
 
             await using var reader = await command.ExecuteReaderAsync();
             while (await reader.ReadAsync())
