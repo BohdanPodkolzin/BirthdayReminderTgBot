@@ -8,8 +8,7 @@ using PRTelegramBot.Models.InlineButtons;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using THeader = PRTelegramBot.Models.Enums.THeader;
-using static BirthdayReminder.DataBase.DataBaseConnector.MySqlConnector;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using static BirthdayReminder.DataBase.DataBaseConnector.Queries;
 
 namespace BirthdayReminder.Telegram.CommandHandlers
 {
@@ -67,7 +66,16 @@ namespace BirthdayReminder.Telegram.CommandHandlers
 
                     // storage data into DB
                     var cache = update.GetCacheData<UserCache>();
-                    await InsertRecordByNameAndDate(update.CallbackQuery.From.Id, cache.PersonName ?? "unknown", birthdayDate);
+                    long userId = update.CallbackQuery.From.Id;
+
+                    if (await IsRecordExist(userId, cache.PersonName ?? "unknown"))
+                    {
+                        await UpdateRecordByNameAndDate(userId, cache.PersonName ?? "unknown", birthdayDate);
+                    }
+                    else
+                    {
+                        await InsertRecordByNameAndDate(userId, cache.PersonName ?? "unknown", birthdayDate);
+                    }
 
                     cache.ClearData();
                     update.ClearStepUserHandler();
