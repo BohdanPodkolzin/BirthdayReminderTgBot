@@ -1,4 +1,5 @@
-﻿using static BirthdayReminder.DataBase.DataBaseConnector.Queries;
+﻿using System.ComponentModel.DataAnnotations;
+using static BirthdayReminder.DataBase.DataBaseConnector.Queries;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
@@ -8,6 +9,7 @@ namespace BirthdayReminder.PersonReminder
     {
         private static readonly TimeSpan CheckInterval = TimeSpan.FromSeconds(10);
         private static DateTime _lastCheckDate = DateTime.UtcNow;
+
         private static bool _isRunning;
         private static readonly object Lock = new();
 
@@ -25,16 +27,13 @@ namespace BirthdayReminder.PersonReminder
                 _isRunning = true;
             }
 
-            Console.WriteLine("Reminder loop started");
             while (_isRunning)
             {
-                foreach (long userId in userIds)
+                foreach (var userId in userIds
+                    .Where(_ => _lastCheckDate.Day != DateTime.UtcNow.Day))
                 {
-                    //if (_lastCheckDate.Day != DateTime.UtcNow.Day)
-                    //{
                     await ReminderBack.RemindPersonForBirthday(botClient, userId);
                     _lastCheckDate = DateTime.UtcNow;
-                    //}
                 }
 
                 await Task.Delay(CheckInterval);

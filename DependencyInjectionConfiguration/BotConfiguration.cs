@@ -6,7 +6,8 @@ namespace BirthdayReminder.DependencyInjectionConfiguration;
 
 public class BotConfiguration
 {
-    public static ServiceProvider? ServiceProvider { get; private set; }
+    public static ServiceProvider? ServiceProvider { get; }
+    public static SqlLoggerService SqlLoggerService { get; }
 
     private static readonly IConfiguration Configuration = new ConfigurationBuilder()
         .SetBasePath(Directory.GetCurrentDirectory())
@@ -26,8 +27,6 @@ public class BotConfiguration
         SqlLoggerService = ServiceProvider.GetRequiredService<SqlLoggerService>();
     }
 
-    public static SqlLoggerService SqlLoggerService { get; }
-
     public static string? GetBotToken()
         => GetBotConfigurationHelpers().ReceiveToken();
 
@@ -37,6 +36,4 @@ public class BotConfiguration
     private static BotConfigurationHelpers GetBotConfigurationHelpers()
         => ServiceProvider!.GetService<BotConfigurationHelpers>()
            ?? throw new Exception("Bot configuration helpers not found");
-
-    //public static ILogger<BotConfiguration>? Logger { get; }
 }

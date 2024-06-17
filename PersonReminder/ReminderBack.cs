@@ -6,23 +6,23 @@ namespace BirthdayReminder.PersonReminder
 {
     public static class ReminderBack
     {
-        public static async Task RemindPersonForBirthday(ITelegramBotClient botClient, long update)
+        public static async Task RemindPersonForBirthday(ITelegramBotClient botClient, long userId)
         {
             var currDate = DateTime.Today;
 
-            var dataFromDataBase = await GetData(update);
+            var dataFromDataBase = await GetData(userId);
 
             foreach (var person in dataFromDataBase)
             {
                 if (person.BirthdayDate.Month.Equals(currDate.Month) && person.BirthdayDate.Day.Equals(currDate.Day))
                 {
                     var message = $"Today is {person.Name}'s birthday!";
-                    _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+                    _ = await PRTelegramBot.Helpers.Message.Send(botClient, userId, message);
                 }
                 else if (person.BirthdayDate.Month.Equals(currDate.Month) && person.BirthdayDate.Day.Equals(currDate.Day + 1))
                 {
                     var message = $"{person.Name}'s birthday is tomorrow!";
-                    _ = await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+                    _ = await PRTelegramBot.Helpers.Message.Send(botClient, userId, message);
                 }
             }
         }

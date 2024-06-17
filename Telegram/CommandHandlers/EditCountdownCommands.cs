@@ -1,5 +1,4 @@
-﻿using BirthdayReminder.PersonReminder;
-using BirthdayReminder.Telegram.Helpers;
+﻿using BirthdayReminder.Telegram.Helpers;
 using BirthdayReminder.Telegram.InlineCommands;
 using BirthdayReminder.Telegram.Models;
 using PRTelegramBot.Attributes;
@@ -8,7 +7,7 @@ using PRTelegramBot.Models;
 using PRTelegramBot.Models.InlineButtons;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using static BirthdayReminder.DataBase.DataBaseConnector.MySqlConnector;
+using static BirthdayReminder.DataBase.DataBaseConnector.Queries;
 
 namespace BirthdayReminder.Telegram.CommandHandlers
 {
@@ -22,12 +21,6 @@ namespace BirthdayReminder.Telegram.CommandHandlers
         {
             try
             {
-                var command = InlineCallback.GetCommandByCallbackOrNull(update.CallbackQuery?.Data ?? "");
-                if (command is not { } __)
-                {
-                    return;
-                }
-
                 const string message = "Enter the name of the person";
                 await PRTelegramBot.Helpers.Message.Edit(botClient, update, message);
 
@@ -100,6 +93,7 @@ namespace BirthdayReminder.Telegram.CommandHandlers
             }
 
             await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+            update.ClearStepUserHandler();
         }
 
         [InlineCallbackHandler<CountdownInlineCommandTHeader>(CountdownInlineCommandTHeader.AllDel)]
@@ -112,7 +106,11 @@ namespace BirthdayReminder.Telegram.CommandHandlers
 
             var inlineKeyboard = InlineKeyboardsHelper.ConfirmationKeyboard();
             var sentMessage = await botClient.EditMessageTextAsync(
-                chatId, prevMessageId, message, replyMarkup: inlineKeyboard);
+                chatId, 
+                prevMessageId,
+                message,
+                replyMarkup: inlineKeyboard
+                );
 
             MenuCommandHandlers.SavePrevMessageIdInChat(chatId, sentMessage.MessageId);
         }
