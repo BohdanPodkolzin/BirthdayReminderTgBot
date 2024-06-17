@@ -13,14 +13,6 @@
     {
         public class StartBotCommandHandler
         {
-            //private static readonly ILogger<StartBotCommandHandler> _logger;
-
-            //static StartBotCommandHandler()
-            //{
-            //    var serviceProvider = BotConfiguration.ServiceProvider;
-            //    _logger = serviceProvider.GetRequiredService<ILogger<StartBotCommandHandler>>();
-
-            //}
 
             [ReplyMenuHandler("/start")]
             public static async Task StartBotMethod(ITelegramBotClient botClient, Update update)
@@ -35,7 +27,7 @@
                 var userNickName = user?.Username ?? "";
 
                 var startMessage = $"🖐️ Hey, @{userNickName}!\n" +
-                                   $"To make your first schedule of birthdays enter /menu";
+                                   $"For the bot to work correctly, specify the city closest to you:";
                 
                 update.RegisterStepHandler(new StepTelegram(GetUserTimezone));
                 await PRTelegramBot.Helpers.Message.Send(botClient, update, startMessage);
@@ -45,7 +37,27 @@
             public static async Task GetUserTimezone(ITelegramBotClient botClient, Update update)
             {
                 var city = update.Message?.Text;
+                if (city == null)
+                {
+                    await PRTelegramBot.Helpers.Message.Send(botClient, update, "Please enter the city name");
+                    return;
+                }
 
+                var (latitude, longitude) = await GetLatitudeAndLongitude(city);
+                if (latitude == null || longitude == null)
+                {
+                    await PRTelegramBot.Helpers.Message.Send(botClient, update, "City not found");
+                    return;
+                }
+
+                var message = await GetTimezone(latitude, longitude);
+
+                update.ClearStepUserHandler();
+                await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+            }
+            
+            private static async Task<(string? lat, string? lon)> GetLatitudeAndLongitude(string city)
+            {
                 var url = $"https://nominatim.openstreetmap.org/search?q={Uri.EscapeDataString(city)}&format=json";
                 using HttpClient client = new HttpClient();
                 client.DefaultRequestHeaders.Add("User-Agent", "CSharpApp");
@@ -53,34 +65,33 @@
                 var response = await client.GetStringAsync(url);
                 var results = JArray.Parse(response);
 
-                if (results.Count == 0)
-                {
-                    await PRTelegramBot.Helpers.Message.Send(botClient, update, "City not found. Please enter the correct city name.");
-                    return;
-                }
-
                 var jsonResult = results[0];
 
                 var lat = jsonResult["lat"]?.Value<string>();
                 var lon = jsonResult["lon"]?.Value<string>();
 
-                var timeUrl =
-                    $"https://api.timezonedb.com/v2.1/get-time-zone?key=7TVJUMUJ9LMG&format=json&by=position&lat={lat}&lng={lon}";
-                var timeResponse = await client.GetStringAsync(timeUrl);
-                var timeResults = JObject.Parse(timeResponse);
-
-                var town = timeResults["cityName"]?.Value<string>();
-                var region = timeResults["countryName"]?.Value<string>();
-                var time = timeResults["formatted"]?.Value<string>();
-
-                var message = 
-                              $"City: {town}, {region}\n" +
-                              $"Time: {time}";  
-
-                update.ClearStepUserHandler();
-                await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
+                return (lat, lon);
             }
 
+            private static async Task<string> GetTimezone(string lat, string lon)
+            {
+                var url =
+                    $"https://api.timezonedb.com/v2.1/get-time-zone?key=7TVJUMUJ9LMG&format=json&by=position&lat={lat}&lng={lon}";
+                using HttpClient client = new HttpClient();
+                client.DefaultRequestHeaders.Add("User-Agent", "CSharpApp");
 
+                var response = await client.GetStringAsync(url);
+                var results = JObject.Parse(response);
+
+                var town = results["cityName"]?.Value<string>();
+                var region = results["countryName"]?.Value<string>();
+                var time = results["formatted"]?.Value<string>();
+
+                var message =
+                    $"City: {town}, {region}\n" +
+                    $"Time: {time}";
+
+                return message;
+            }
         }
     }
