@@ -1,11 +1,9 @@
-﻿using BirthdayReminder.PersonReminder;
-using BirthdayReminder.Telegram.Models;
-using PRTelegramBot.Attributes;
-using PRTelegramBot.Extensions;
-using PRTelegramBot.Models;
+﻿using PRTelegramBot.Attributes;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using static BirthdayReminder.Telegram.Helpers.StartBotHelper;
+using static BirthdayReminder.MySqlDataBase.DataBaseConnector.Queries;
+using static BirthdayReminder.Telegram.CommandHandlers.StartBotCommand.NewUserStartBotHandler;
+using static BirthdayReminder.Telegram.CommandHandlers.StartBotCommand.ExistingUserStartBotHandler;
 
 namespace BirthdayReminder.Telegram.CommandHandlers.StartBotCommand
 {
@@ -13,80 +11,18 @@ namespace BirthdayReminder.Telegram.CommandHandlers.StartBotCommand
     {
 
         [ReplyMenuHandler("/start")]
-        public static async Task StartBotMethod(ITelegramBotClient botClient, Update update)
+        public static async Task StartBotNewMethod(ITelegramBotClient botClient, Update update)
         {
-            if (update.Message?.From == null)
+            if (update.Message?.From == null) return;
+
+            if (!await IsUserExist(update.Message.From.Id))
             {
-                return;
+                await NewUserStartBot(botClient, update);
             }
-
-            var userTelegramTag = update.Message.From?.Username ?? "";
-            var startMessage = $"🖐️ Hey, @{userTelegramTag}!\n" +
-                                $"For the bot to work correctly, specify the city closest to you:";
-
-            update.RegisterStepHandler(new StepTelegram(GetUserTimezone, new PlaceCoordinatesStepCache()));
-
-            await PRTelegramBot.Helpers.Message.Send(botClient, update, startMessage);
-            await InfinityLoop.StartReminderLoop(botClient, update);
+            else
+            {
+                await ExistingUserStartBotMenu(botClient, update);
+            }
         }
-
-        public static async Task GetUserTimezone(ITelegramBotClient botClient, Update update)
-        {
-            var city = update.Message?.Text;
-            if (city == null)
-            {
-                await PRTelegramBot.Helpers.Message.Send(botClient, update, "Please enter the city name");
-                return;
-            }
-
-            var (latitude, longitude) = await GetLatitudeAndLongitude(city);
-            if (latitude == null || longitude == null)
-            {
-                await PRTelegramBot.Helpers.Message.Send(botClient, update, "City not found");
-                return;
-            }
-
-            //var cache = update.GetCacheData<PlaceCoordinatesStepCache>();
-            //if (update.Message?.From == null)
-            //{
-            //    return;
-            //}
-
-            //cache.UserId = update.Message.From.Id;
-            //cache.Latitude = latitude;
-            //cache.Longitude = longitude;
-
-
-
-            var message = await GetPlaceInformation(latitude, longitude);
-            await ConfirmingTimezoneHandler.ConfirmingTimezoneMenu(botClient, update, message);
-
-            var handler = update.GetStepHandler<StepTelegram>();
-            handler!.RegisterNextStep(ConfirmingTimezone);
-        }
-
-        public static async Task ConfirmingTimezone(ITelegramBotClient botClient, Update update)
-        {
-            var userChoice = update.Message?.Text;
-            if (userChoice == null)
-            {
-                await PRTelegramBot.Helpers.Message.Send(botClient, update, "Please select the correct option");
-                return;
-            }
-
-            if (userChoice == "Confirm")
-            {
-                await PRTelegramBot.Helpers.Message.Send(botClient, update, "Timezone confirmed");
-                update.ClearStepUserHandler();
-            }
-            else if (userChoice == "Edit")
-            { 
-                await PRTelegramBot.Helpers.Message.Send(botClient, update, "Please enter the city name");
-                var handler = update.GetStepHandler<StepTelegram>();
-                handler!.RegisterNextStep(GetUserTimezone);
-            }
-            
-        }
-
     }
 }
