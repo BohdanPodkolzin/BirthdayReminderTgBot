@@ -1,4 +1,5 @@
 ﻿using BirthdayReminder.PersonReminder;
+using BirthdayReminder.Telegram.Models;
 using PRTelegramBot.Attributes;
 using PRTelegramBot.Extensions;
 using PRTelegramBot.Models;
@@ -23,7 +24,7 @@ namespace BirthdayReminder.Telegram.CommandHandlers
             var startMessage = $"🖐️ Hey, @{userTelegramTag}!\n" +
                                 $"For the bot to work correctly, specify the city closest to you:";
                 
-            update.RegisterStepHandler(new StepTelegram(GetUserTimezone));
+            update.RegisterStepHandler(new StepTelegram(GetUserTimezone, new PlaceCoordinatesCache()));
 
             await PRTelegramBot.Helpers.Message.Send(botClient, update, startMessage);
             await InfinityLoop.StartReminderLoop(botClient, update);
@@ -44,10 +45,20 @@ namespace BirthdayReminder.Telegram.CommandHandlers
                 await PRTelegramBot.Helpers.Message.Send(botClient, update, "City not found");
                 return;
             }
+            
+            //var cache = update.GetCacheData<PlaceCoordinatesCache>();
+            //if (update.Message?.From == null)
+            //{
+            //    return;
+            //}
+
+            //cache.UserId = update.Message.From.Id;
+            //cache.Latitude = latitude;
+            //cache.Longitude = longitude;
 
             var message = await GetPlaceInformation(latitude, longitude);
-            await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
-
+            await ConfirmingTimezoneHandler.ConfirmingTimezoneMenu(botClient, update, message);
+            
             update.ClearStepUserHandler();
         }
     }

@@ -18,6 +18,17 @@ public static class ReplyKeyboardHelper
         return MenuGenerator.ReplyKeyboard(2, menuList);
     }
 
+    public static ReplyKeyboardMarkup GetConfirmationTimezoneMenu()
+    {
+        List<KeyboardButton> menuList =
+        [
+            new KeyboardButton("Confirm"),
+            new KeyboardButton("Edit")  
+        ];
+
+        return MenuGenerator.ReplyKeyboard(2, menuList);
+    }
+
     public static OptionMessage AsOption(this ReplyKeyboardMarkup keyboardMarkup)
         => new() { MenuReplyKeyboardMarkup = keyboardMarkup };
 }
