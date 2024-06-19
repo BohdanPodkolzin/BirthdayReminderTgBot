@@ -8,7 +8,7 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 using TgMessageHelper = PRTelegramBot.Helpers.Message;
 
-namespace BirthdayReminder.Telegram.CommandHandlers
+namespace BirthdayReminder.Telegram.CommandHandlers.StartBotCommand
 {
     public class ConfirmingTimezoneHandler
     {

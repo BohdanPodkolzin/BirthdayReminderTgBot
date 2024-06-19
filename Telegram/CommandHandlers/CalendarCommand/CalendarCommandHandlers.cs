@@ -10,7 +10,7 @@ using Telegram.Bot.Types;
 using THeader = PRTelegramBot.Models.Enums.THeader;
 using static BirthdayReminder.DataBase.DataBaseConnector.Queries;
 
-namespace BirthdayReminder.Telegram.CommandHandlers
+namespace BirthdayReminder.Telegram.CommandHandlers.CalendarCommand
 {
     public static class CalendarCommandHandlers
     {
@@ -65,7 +65,7 @@ namespace BirthdayReminder.Telegram.CommandHandlers
                     message = $"Picked date: <b>{birthdayDate:dd.MM.yyyy}</b>";
 
                     // storage data into DB
-                    var cache = update.GetCacheData<UserCache>();
+                    var cache = update.GetCacheData<RecordCache>();
                     long userId = update.CallbackQuery.From.Id;
 
                     if (await IsRecordExist(userId, cache.PersonName ?? "unknown"))

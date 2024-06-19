@@ -1,4 +1,5 @@
-﻿using BirthdayReminder.Telegram.Helpers;
+﻿using BirthdayReminder.Telegram.CommandHandlers.CalendarCommand;
+using BirthdayReminder.Telegram.Helpers;
 using BirthdayReminder.Telegram.InlineCommands;
 using BirthdayReminder.Telegram.Models;
 using PRTelegramBot.Attributes;
@@ -9,12 +10,12 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using static BirthdayReminder.DataBase.DataBaseConnector.Queries;
 
-namespace BirthdayReminder.Telegram.CommandHandlers
+namespace BirthdayReminder.Telegram.CommandHandlers.MainMenuCommand
 {
     public class EditCountdownCommands
     {
-        private static UserCache GetUserCache(Update update) 
-            => update.GetCacheData<UserCache>();
+        private static RecordCache GetUserCache(Update update)
+            => update.GetCacheData<RecordCache>();
 
         [InlineCallbackHandler<CountdownInlineCommandTHeader>(CountdownInlineCommandTHeader.Add)]
         public static async Task CreateEventStepOne(ITelegramBotClient botClient, Update update)
@@ -35,7 +36,7 @@ namespace BirthdayReminder.Telegram.CommandHandlers
         private static async Task CreateEventStepTwo(ITelegramBotClient botClient, Update update)
         {
             var personName = update.Message?.Text;
-            
+
             if (personName != null)
             {
                 GetUserCache(update).PersonName = personName;
@@ -106,7 +107,7 @@ namespace BirthdayReminder.Telegram.CommandHandlers
 
             var inlineKeyboard = InlineKeyboardsHelper.ConfirmationKeyboard();
             var sentMessage = await botClient.EditMessageTextAsync(
-                chatId, 
+                chatId,
                 prevMessageId,
                 message,
                 replyMarkup: inlineKeyboard

@@ -2,7 +2,7 @@
 
 namespace BirthdayReminder.Telegram.Models
 {
-    public class UserCache : ITelegramCache
+    public class RecordCache : ITelegramCache
     {
         public readonly Dictionary<string, DateTime> ScheduleDict = new();
         public string? PersonName { get; set; }
@@ -10,7 +10,7 @@ namespace BirthdayReminder.Telegram.Models
         public bool ClearData()
         {
             ScheduleDict.Clear();
-            PersonName = null;
+            PersonName = string.Empty;
             return true;
         }
     }

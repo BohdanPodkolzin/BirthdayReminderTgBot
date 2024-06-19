@@ -5,7 +5,7 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using TgMessageHelper = PRTelegramBot.Helpers.Message;
 
-namespace BirthdayReminder.Telegram.CommandHandlers
+namespace BirthdayReminder.Telegram.CommandHandlers.MainMenuCommand
 {
     public static class MenuCommandHandlers
     {

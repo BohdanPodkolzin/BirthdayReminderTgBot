@@ -7,7 +7,7 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using static BirthdayReminder.Telegram.Helpers.StartBotHelper;
 
-namespace BirthdayReminder.Telegram.CommandHandlers
+namespace BirthdayReminder.Telegram.CommandHandlers.StartBotCommand
 {
     public class StartBotCommandHandler
     {
@@ -23,8 +23,8 @@ namespace BirthdayReminder.Telegram.CommandHandlers
             var userTelegramTag = update.Message.From?.Username ?? "";
             var startMessage = $"🖐️ Hey, @{userTelegramTag}!\n" +
                                 $"For the bot to work correctly, specify the city closest to you:";
-                
-            update.RegisterStepHandler(new StepTelegram(GetUserTimezone, new PlaceCoordinatesCache()));
+
+            update.RegisterStepHandler(new StepTelegram(GetUserTimezone, new PlaceCoordinatesStepCache()));
 
             await PRTelegramBot.Helpers.Message.Send(botClient, update, startMessage);
             await InfinityLoop.StartReminderLoop(botClient, update);
@@ -45,8 +45,8 @@ namespace BirthdayReminder.Telegram.CommandHandlers
                 await PRTelegramBot.Helpers.Message.Send(botClient, update, "City not found");
                 return;
             }
-            
-            //var cache = update.GetCacheData<PlaceCoordinatesCache>();
+
+            //var cache = update.GetCacheData<PlaceCoordinatesStepCache>();
             //if (update.Message?.From == null)
             //{
             //    return;
@@ -56,10 +56,37 @@ namespace BirthdayReminder.Telegram.CommandHandlers
             //cache.Latitude = latitude;
             //cache.Longitude = longitude;
 
+
+
             var message = await GetPlaceInformation(latitude, longitude);
             await ConfirmingTimezoneHandler.ConfirmingTimezoneMenu(botClient, update, message);
-            
-            update.ClearStepUserHandler();
+
+            var handler = update.GetStepHandler<StepTelegram>();
+            handler!.RegisterNextStep(ConfirmingTimezone);
         }
+
+        public static async Task ConfirmingTimezone(ITelegramBotClient botClient, Update update)
+        {
+            var userChoice = update.Message?.Text;
+            if (userChoice == null)
+            {
+                await PRTelegramBot.Helpers.Message.Send(botClient, update, "Please select the correct option");
+                return;
+            }
+
+            if (userChoice == "Confirm")
+            {
+                await PRTelegramBot.Helpers.Message.Send(botClient, update, "Timezone confirmed");
+                update.ClearStepUserHandler();
+            }
+            else if (userChoice == "Edit")
+            { 
+                await PRTelegramBot.Helpers.Message.Send(botClient, update, "Please enter the city name");
+                var handler = update.GetStepHandler<StepTelegram>();
+                handler!.RegisterNextStep(GetUserTimezone);
+            }
+            
+        }
+
     }
 }

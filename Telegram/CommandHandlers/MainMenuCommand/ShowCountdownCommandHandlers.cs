@@ -6,7 +6,7 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using static BirthdayReminder.DataBase.DataBaseConnector.Queries;
 
-namespace BirthdayReminder.Telegram.CommandHandlers
+namespace BirthdayReminder.Telegram.CommandHandlers.MainMenuCommand
 {
     public static class ShowCountdownCommandHandlers
     {
