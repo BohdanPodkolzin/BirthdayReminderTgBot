@@ -1,4 +1,5 @@
-﻿using BirthdayReminder.Telegram.Helpers;
+﻿using BirthdayReminder.Telegram.CommandHandlers.StartBotCommand;
+using BirthdayReminder.Telegram.Helpers;
 using PRTelegramBot.Attributes;
 using PRTelegramBot.Extensions;
 using Telegram.Bot;
@@ -48,6 +49,10 @@ namespace BirthdayReminder.Telegram.CommandHandlers.MainMenuCommand
                 await botClient.DeleteMessageAsync(chatId, prevMessageId);
             }
         }
+
+        [ReplyMenuHandler("Edit Timezone")]
+        public static async Task EditTimezone(ITelegramBotClient botClient, Update update) 
+            => await NewUserStartBotHandler.NewUserStartBot(botClient, update);
 
         public static int GetPrevMessageIdInChat(long chatId)
             => EditCountdownMessageIds.Remove(chatId, out var value) ? value : -1;

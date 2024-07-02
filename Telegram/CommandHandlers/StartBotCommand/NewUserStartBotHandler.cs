@@ -16,13 +16,11 @@ namespace BirthdayReminder.Telegram.CommandHandlers.StartBotCommand
         {
             if (update.Message?.From == null) return;
 
-            var userTelegramTag = update.Message.From.Username;
-            var startMessage = $"🖐️ Hey, @{userTelegramTag}!\n" +
-                               $"For the bot to work correctly, specify the city closest to you:";
+            const string message = "For the bot to work correctly, specify the city closest to you:";
 
             update.RegisterStepHandler(new StepTelegram(GetUserTimezone, new PlaceCoordinatesStepCache()));
 
-            await PRTelegramBot.Helpers.Message.Send(botClient, update, startMessage);
+            await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
             await InfinityLoop.StartReminderLoop(botClient, update);
         }
 
@@ -55,7 +53,7 @@ namespace BirthdayReminder.Telegram.CommandHandlers.StartBotCommand
             {
                 case "Confirm":
                 {
-                    await InsertLatitudeAndLongitude(userId, cache.Latitude, cache.Longitude);
+                    await IncludeLatitudeAndLongitude(userId, cache.Latitude, cache.Longitude);
                     await Menu(botClient, update);
                     
                     update.ClearStepUserHandler();
