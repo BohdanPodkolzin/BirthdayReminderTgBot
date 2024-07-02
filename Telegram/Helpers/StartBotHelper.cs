@@ -11,7 +11,7 @@ namespace BirthdayReminder.Telegram.Helpers
             return client;
         }
 
-        public static async Task<(string? lat, string? lon)> GetLatitudeAndLongitude(string city)
+        public static async Task<(string? lat, string? lon)> GetLatitudeAndLongitudeFromApi(string city)
         {
             var url = $"https://nominatim.openstreetmap.org/search?q={Uri.EscapeDataString(city)}&format=json";
             using var client = GetConfiguredHttpClient();
@@ -27,7 +27,7 @@ namespace BirthdayReminder.Telegram.Helpers
             return (lat, lon);
         }
 
-        public static async Task<string> GetPlaceInformation(string lat, string lon)
+        public static async Task<string> GetPlaceInformation(string? lat, string? lon)
         {
             var url =
                 $"https://api.timezonedb.com/v2.1/get-time-zone?key=7TVJUMUJ9LMG&format=json&by=position&lat={lat}&lng={lon}";

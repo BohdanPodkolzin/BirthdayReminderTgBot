@@ -11,9 +11,9 @@
 
 -- use first_schema;
 
--- CREATE TABLE users_coords(
+-- CREATE TABLE users_place_coords(
 --	id INTEGER AUTO_INCREMENT,
 --    telegram_id BIGINT NOT NULL,
 --    latitude VARCHAR(255) NOT NULL,
---    logitude VARCHAR(255) NOT NULL
+--    longitude VARCHAR(255) NOT NULL
 -- );

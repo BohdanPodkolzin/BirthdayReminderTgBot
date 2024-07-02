@@ -4,7 +4,7 @@ using PRTelegramBot.Attributes;
 using PRTelegramBot.Extensions;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using static BirthdayReminder.DataBase.DataBaseConnector.Queries;
+using static BirthdayReminder.MySqlDataBase.DataBaseConnector.Queries;
 
 namespace BirthdayReminder.Telegram.CommandHandlers.MainMenuCommand
 {
@@ -27,7 +27,7 @@ namespace BirthdayReminder.Telegram.CommandHandlers.MainMenuCommand
             }
             else
             {
-                var dataFromDataBase = await GetData(update.Message.From.Id);
+                var dataFromDataBase = await GetRecordsData(update.Message.From.Id);
                 messageBuilder.Append("<b>Birthdays schedule</b>\n");
 
                 foreach (var person in dataFromDataBase)

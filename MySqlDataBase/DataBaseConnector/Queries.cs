@@ -1,10 +1,7 @@
 ﻿using BirthdayReminder.DependencyInjectionConfiguration;
-using BirthdayReminder.MySqlDataBase.DataBaseConnector;
-using Microsoft.Extensions.Logging;
 using MySqlConnector;
 
-
-namespace BirthdayReminder.DataBase.DataBaseConnector
+namespace BirthdayReminder.MySqlDataBase.DataBaseConnector
 {
     public enum Input
     {
@@ -87,7 +84,7 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
             return count != 0;
         }
 
-        public static async Task<List<PersonInDataBase>> GetData(long userId)
+        public static async Task<List<PersonInDataBase>> GetRecordsData(long userId)
         {
             await using var connection = await GetOpenConnectionAsync();
             await using var command = await GetCommandAsync(connection,
@@ -133,6 +130,59 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
             return dataset;
         }
 
+        public static async Task IncludeLatitudeAndLongitude(long userId, string latitude, string longitude)
+        {
+            await using var connection = await GetOpenConnectionAsync();
+            string query;
+            if (await IsUserExist(userId))
+            {
+                query =
+                    "UPDATE users_place_coords SET latitude = @latitude, longitude = @longitude WHERE telegram_id = @userId;";
+            }
+            else
+            {
+                query =
+                    "INSERT INTO users_place_coords (telegram_id, latitude, longitude) VALUES (@userId, @latitude, @longitude)";
+            }
+            await using var command = await GetCommandAsync(connection, query);
+
+            command.Parameters.AddWithValue("@userId", userId);
+            command.Parameters.AddWithValue("@latitude", latitude);
+            command.Parameters.AddWithValue("@longitude", longitude);
+
+            await command.ExecuteNonQueryAsync();
+        }
+
+        public static async Task<(string?, string?)> GetLatitudeAndLongitudeFromDatabase(long userId)
+        {
+            await using var connection = await GetOpenConnectionAsync();
+            await using var command = await GetCommandAsync(connection,
+                "SELECT latitude, longitude FROM users_place_coords WHERE telegram_id = @userId");
+            command.Parameters.AddWithValue("@userId", userId);
+
+            await using var reader = await command.ExecuteReaderAsync();
+            if (!await reader.ReadAsync()) return (null, null);
+
+            var latitude = reader["latitude"] as string;
+            var longitude = reader["longitude"] as string;
+            return (latitude, longitude);
+
+        }
+
+        public static async Task UpdateLatitudeAndLongitude(long userId, string latitude, string longitude)
+        {
+            await using var connection = await GetOpenConnectionAsync();
+            await using var command = await GetCommandAsync(connection,
+                "UPDATE users_place_coords SET latitude = @latitude, longitude = @longitude WHERE telegram_id = @userId;");
+
+            command.Parameters.AddWithValue("@userId", userId);
+            command.Parameters.AddWithValue("@latitude", latitude);
+            command.Parameters.AddWithValue("@longitude", longitude);
+            
+            await command.ExecuteNonQueryAsync();
+
+        }
+
         public static async Task RemoveAllRecords(long userId)
         {
             await using var connection = await GetOpenConnectionAsync();
@@ -165,6 +215,20 @@ namespace BirthdayReminder.DataBase.DataBaseConnector
             var count = Convert.ToInt32(result);
 
             return count == 0;
+        }
+
+        public static async Task<bool> IsUserExist(long userId)
+        {
+            await using var connection = await GetOpenConnectionAsync();
+            await using var command = await GetCommandAsync(connection,
+                "SELECT COUNT(*) FROM users_place_coords WHERE telegram_id = @userId");
+
+            AddParametersByInput(command, Input.UserId, userId);
+            var result = await command.ExecuteScalarAsync();
+            var count = Convert.ToInt32(result);
+
+            Console.WriteLine(count);
+            return count > 0;
         }
 
         private static async Task<MySqlConnection> GetOpenConnectionAsync()

@@ -8,7 +8,7 @@ using PRTelegramBot.Models.InlineButtons;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using THeader = PRTelegramBot.Models.Enums.THeader;
-using static BirthdayReminder.DataBase.DataBaseConnector.Queries;
+using static BirthdayReminder.MySqlDataBase.DataBaseConnector.Queries;
 
 namespace BirthdayReminder.Telegram.CommandHandlers.CalendarCommand
 {

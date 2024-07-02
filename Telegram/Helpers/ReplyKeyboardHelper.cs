@@ -11,6 +11,7 @@ public static class ReplyKeyboardHelper
         List<KeyboardButton> menuList =
         [
             new KeyboardButton("About"),
+            new KeyboardButton("Edit Timezone"),
             new KeyboardButton("Edit Countdown"),
             new KeyboardButton("Show countdown")
         ];

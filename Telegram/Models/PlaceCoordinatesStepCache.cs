@@ -11,14 +11,12 @@ namespace BirthdayReminder.Telegram.Models
     {
         public readonly Dictionary<long, (string, string)> PlaceCoordinatesDict = new();
 
-        public long UserId { get; set; }
         public string? Latitude { get; set; }
         public string? Longitude { get; set; }
 
         public bool ClearData()
         {
             PlaceCoordinatesDict.Clear();
-            UserId = 0;
             Latitude = null;
             Longitude = null;
             return true;

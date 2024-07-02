@@ -8,11 +8,11 @@ using PRTelegramBot.Models;
 using PRTelegramBot.Models.InlineButtons;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using static BirthdayReminder.DataBase.DataBaseConnector.Queries;
+using static BirthdayReminder.MySqlDataBase.DataBaseConnector.Queries;
 
 namespace BirthdayReminder.Telegram.CommandHandlers.MainMenuCommand
 {
-    public class EditCountdownCommands
+    public class EditCommandsHandler
     {
         private static RecordCache GetUserCache(Update update)
             => update.GetCacheData<RecordCache>();

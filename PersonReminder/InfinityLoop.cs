@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using static BirthdayReminder.DataBase.DataBaseConnector.Queries;
+using static BirthdayReminder.MySqlDataBase.DataBaseConnector.Queries;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 

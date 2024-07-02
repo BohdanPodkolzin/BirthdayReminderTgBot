@@ -1,6 +1,6 @@
 ﻿using Telegram.Bot;
 using Telegram.Bot.Types;
-using static BirthdayReminder.DataBase.DataBaseConnector.Queries;
+using static BirthdayReminder.MySqlDataBase.DataBaseConnector.Queries;
 
 namespace BirthdayReminder.PersonReminder
 {
@@ -10,7 +10,7 @@ namespace BirthdayReminder.PersonReminder
         {
             var currDate = DateTime.Today;
 
-            var dataFromDataBase = await GetData(userId);
+            var dataFromDataBase = await GetRecordsData(userId);
 
             foreach (var person in dataFromDataBase)
             {
