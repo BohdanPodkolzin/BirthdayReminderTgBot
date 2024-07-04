@@ -1,5 +1,6 @@
 ﻿using BirthdayReminder.DependencyInjectionConfiguration;
 using MySqlConnector;
+using Telegram.Bot.Types;
 
 namespace BirthdayReminder.MySqlDataBase.DataBaseConnector
 {
@@ -84,7 +85,7 @@ namespace BirthdayReminder.MySqlDataBase.DataBaseConnector
             return count != 0;
         }
 
-        public static async Task<List<PersonInDataBase>> GetRecordsData(long userId)
+        public static async Task<List<RecordsBirthdayListModel>> GetRecordsData(long userId)
         {
             await using var connection = await GetOpenConnectionAsync();
             await using var command = await GetCommandAsync(connection,
@@ -92,12 +93,12 @@ namespace BirthdayReminder.MySqlDataBase.DataBaseConnector
                 "WHERE user_telegram_id = @userId");
             
             AddParametersByInput(command, Input.UserId, userId);
-            var dataset = new List<PersonInDataBase>();
+            var dataset = new List<RecordsBirthdayListModel>();
 
             await using var reader = await command.ExecuteReaderAsync();
             while (await reader.ReadAsync())
             {
-                var recordObj = new PersonInDataBase
+                var recordObj = new RecordsBirthdayListModel
                 {
                     Id = reader.GetInt32(0),
                     TelegramId = reader.GetInt64(1),
@@ -111,6 +112,19 @@ namespace BirthdayReminder.MySqlDataBase.DataBaseConnector
             }
 
             return dataset;
+        }
+
+        public static async Task<List<recordsTimezoneList>> GetRecordsTimezone(long userId)
+        {
+
+            await using var connection = await GetOpenConnectionAsync();
+            await using var command = await GetCommandAsync(connection,
+                "SELECT id, telegram_id, latitude, longitude FROM users_place_coords" +
+                "WHERE telegram_id = @userId");
+            command.Parameters.AddWithValue("@userId", userId);
+
+            var dataset = new List<recordsTimezoneList>();
+            
         }
 
         public static async Task<List<long>> GetUsersIds()

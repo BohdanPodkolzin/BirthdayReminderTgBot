@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BirthdayReminder.MySqlDataBase.DataBaseConnector
 {
-    public class PersonInDataBase
+    public class RecordsBirthdayListModel
     {
         public int Id { get; set; }
         public long TelegramId { get; set; }

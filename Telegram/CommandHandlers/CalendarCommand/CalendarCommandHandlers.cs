@@ -65,7 +65,7 @@ namespace BirthdayReminder.Telegram.CommandHandlers.CalendarCommand
                     message = $"Picked date: <b>{birthdayDate:dd.MM.yyyy}</b>";
 
                     // storage data into DB
-                    var cache = update.GetCacheData<RecordCache>();
+                    var cache = update.GetCacheData<RecordCacheModel>();
                     long userId = update.CallbackQuery.From.Id;
 
                     if (await IsRecordExist(userId, cache.PersonName ?? "unknown"))

@@ -18,7 +18,7 @@ namespace BirthdayReminder.Telegram.CommandHandlers.StartBotCommand
 
             const string message = "For the bot to work correctly, specify the city closest to you:";
 
-            update.RegisterStepHandler(new StepTelegram(GetUserTimezone, new PlaceCoordinatesStepCache()));
+            update.RegisterStepHandler(new StepTelegram(GetUserTimezone, new RecordsCoordinatesModel()));
 
             await PRTelegramBot.Helpers.Message.Send(botClient, update, message);
             await InfinityLoop.StartReminderLoop(botClient, update);
@@ -35,8 +35,8 @@ namespace BirthdayReminder.Telegram.CommandHandlers.StartBotCommand
             await ConfirmingTimezoneHandler.ConfirmingTimezoneMenu(botClient, update, message);
 
             var handler = update.GetStepHandler<StepTelegram>();
-            handler!.GetCache<PlaceCoordinatesStepCache>().Latitude = latitude;
-            handler!.GetCache<PlaceCoordinatesStepCache>().Longitude = longitude;
+            handler!.GetCache<RecordsCoordinatesModel>().Latitude = latitude;
+            handler!.GetCache<RecordsCoordinatesModel>().Longitude = longitude;
             handler!.RegisterNextStep(ConfirmingTimezone);
         }
 
@@ -44,7 +44,7 @@ namespace BirthdayReminder.Telegram.CommandHandlers.StartBotCommand
         {
 
             var handler = update.GetStepHandler<StepTelegram>();
-            var cache = handler!.GetCache<PlaceCoordinatesStepCache>();
+            var cache = handler!.GetCache<RecordsCoordinatesModel>();
             if (update.Message?.From == null || cache.Latitude == null || cache.Longitude == null) return;
 
             var userId = update.Message.From.Id;
