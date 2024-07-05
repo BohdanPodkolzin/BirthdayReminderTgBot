@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BirthdayReminder.MySqlDataBase.DataBaseConnector
+namespace BirthdayReminder.Telegram.Models
 {
     public class RecordsBirthdayListModel
     {
-        public int Id { get; set; }
         public long TelegramId { get; set; }
         public required string Name { get; set; }
         public DateTime BirthdayDate { get; set; }

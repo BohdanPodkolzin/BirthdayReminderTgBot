@@ -4,12 +4,8 @@ namespace BirthdayReminder.Telegram.Helpers
 {
     public class StartBotHelper
     {
-        private static HttpClient GetConfiguredHttpClient()
-        {
-            HttpClient client = new();
-            client.DefaultRequestHeaders.Add("User-Agent", "CSharpApp");
-            return client;
-        }
+        private static HttpClient GetConfiguredHttpClient() 
+            => new() { DefaultRequestHeaders = { { "User-Agent", "CSharpApp" } } };
 
         public static async Task<(string? lat, string? lon)> GetLatitudeAndLongitudeFromApi(string city)
         {
@@ -43,7 +39,7 @@ namespace BirthdayReminder.Telegram.Helpers
             var message =
                 $"City: {town}, {region}\n" +
                 $"Time: {time}";
-
+            
             return message;
         }
     }

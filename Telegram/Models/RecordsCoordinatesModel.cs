@@ -8,10 +8,8 @@ using PRTelegramBot.Interface;
 
 namespace BirthdayReminder.Telegram.Models
 {
-    public class PlaceCoordinatesStepCacheModel : ITelegramCache
+    public class RecordsCoordinatesModel : ITelegramCache
     {
-        public readonly Dictionary<long, (string, string)> PlaceCoordinatesDict = new();
-
         public int Id { get; set; }
 
         public long TelegramId { get; set; }
@@ -21,7 +19,6 @@ namespace BirthdayReminder.Telegram.Models
 
         public bool ClearData()
         {
-            PlaceCoordinatesDict.Clear();
             Id = 0;
             TelegramId = 0;
             Latitude = string.Empty;

@@ -2,7 +2,7 @@
 
 namespace BirthdayReminder.Telegram.Models
 {
-    public class RecordCache : ITelegramCache
+    public class RecordCacheModel : ITelegramCache
     {
         public readonly Dictionary<string, DateTime> ScheduleDict = new();
         public string? PersonName { get; set; }

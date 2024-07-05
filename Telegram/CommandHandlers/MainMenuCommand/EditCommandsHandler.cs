@@ -14,8 +14,8 @@ namespace BirthdayReminder.Telegram.CommandHandlers.MainMenuCommand
 {
     public class EditCommandsHandler
     {
-        private static RecordCache GetUserCache(Update update)
-            => update.GetCacheData<RecordCache>();
+        private static RecordCacheModel GetUserCache(Update update)
+            => update.GetCacheData<RecordCacheModel>();
 
         [InlineCallbackHandler<CountdownInlineCommandTHeader>(CountdownInlineCommandTHeader.Add)]
         public static async Task CreateEventStepOne(ITelegramBotClient botClient, Update update)
