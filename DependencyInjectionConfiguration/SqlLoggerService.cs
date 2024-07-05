@@ -29,5 +29,10 @@ namespace BirthdayReminder.DependencyInjectionConfiguration
         {
             logger.LogError("Error occurred for user with ID: {UserId}", userId);
         }
+
+        public void LogInfinityLoop()
+        {
+            logger.LogInformation("Infinity loop started");
+        }
     }
 }

@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace BirthdayReminder.Telegram.Models
 {
-    internal class RecordsTodayDayAndDataModel
+    public class RecordsTodayDayAndDataModel
     {
+        public long TelegramId { get; set; }
+        public string? Name { get; set; }
+        public DateTime? BirthdayDate { get; set; }
+        public DateTime TodayDate { get; set; }
+        public string? Latitude { get; set; }
+        public string? Longitude { get; set; }
     }
 }

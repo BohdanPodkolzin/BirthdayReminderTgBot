@@ -6,24 +6,33 @@ namespace BirthdayReminder.PersonReminder
 {
     public static class ReminderBack
     {
-        public static async Task RemindPersonForBirthday(ITelegramBotClient botClient, long userId)
+        public static async Task RemindPersonForBirthday(ITelegramBotClient botClient, long userId, DateTime currentDay)
         {
-            var currDate = DateTime.Today;
 
-            var dataFromDataBase = await GetRecordsData(userId);
+            var dataFromDataBase = await GetFullRecordsData(userId);
 
-            foreach (var person in dataFromDataBase)
+            foreach (var record in dataFromDataBase)
             {
-                if (person.BirthdayDate.Month.Equals(currDate.Month) && person.BirthdayDate.Day.Equals(currDate.Day))
+                if (record.BirthdayDate == null)
                 {
-                    var message = $"Today is {person.Name}'s birthday!";
-                    _ = await PRTelegramBot.Helpers.Message.Send(botClient, userId, message);
-                }
-                else if (person.BirthdayDate.Month.Equals(currDate.Month) && person.BirthdayDate.Day.Equals(currDate.Day + 1))
+                    Console.WriteLine("Error at if");
+                    return;
+                };
+
+                var tomorrow = currentDay.AddDays(1);
+                var message = string.Empty;
+                if (record.BirthdayDate.Value.Month.Equals(currentDay.Month) &&
+                    record.BirthdayDate.Value.Day.Equals(currentDay.Day))
                 {
-                    var message = $"{person.Name}'s birthday is tomorrow!";
-                    _ = await PRTelegramBot.Helpers.Message.Send(botClient, userId, message);
+                    message = $"Today is {record.Name}'s birthday";
                 }
+                else if (record.BirthdayDate.Value.Month.Equals(tomorrow.Month) &&
+                         record.BirthdayDate.Value.Day.Equals(tomorrow.Day))
+                {
+                    message = $"{record.Name}'s birthday is tomorrow!";
+                }
+
+                _ = await PRTelegramBot.Helpers.Message.Send(botClient, userId, message);
             }
         }
     }

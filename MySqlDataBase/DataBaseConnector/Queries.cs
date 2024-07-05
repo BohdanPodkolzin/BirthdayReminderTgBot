@@ -114,6 +114,45 @@ namespace BirthdayReminder.MySqlDataBase.DataBaseConnector
             return dataset;
         }
 
+        public static async Task<List<RecordsTodayDayAndDataModel>> GetFullRecordsData(long userId)
+        {
+            const string query = 
+                "SELECT us.user_telegram_id, us.record, us.bday_date, upc.latitude, upc.longitude, upc.today_date " +
+                "FROM users_schedule us\nJOIN users_place_coords upc\n" +
+                "ON us.user_telegram_id = upc.telegram_id";
+
+            await using var connection = await GetOpenConnectionAsync();
+            await using var command = await GetCommandAsync(connection, query);
+            command.Parameters.AddWithValue("@userId", userId);
+
+            var dataset = new List<RecordsTodayDayAndDataModel>();
+            await using var reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                var recordObj = new RecordsTodayDayAndDataModel
+                {
+                    TelegramId = reader.GetInt64(0),
+                    Name = reader.GetString(1),
+                    BirthdayDate = reader.IsDBNull(2) 
+                        ? DateTime.MinValue 
+                        : reader.GetDateTime(2),
+                    Latitude = reader.IsDBNull(3) 
+                        ? null 
+                        : reader.GetString(3),
+                    Longitude = reader.IsDBNull(4) 
+                        ? null 
+                        : reader.GetString(4),
+                    TodayDate = reader.IsDBNull(5)
+                        ? DateTime.MinValue
+                        : reader.GetDateTime(5)
+                };
+
+                dataset.Add(recordObj);
+            }
+
+            return dataset;
+        }
+
         public static async Task<List<RecordsCoordinatesModel>> GetRecordsTimezone(long userId)
         {
 
@@ -157,6 +196,34 @@ namespace BirthdayReminder.MySqlDataBase.DataBaseConnector
             return dataset;
         }
 
+        public static async Task<List<RecordsCoordinatesModel>> GetUsersPlaceCoordinatesTable()
+        {
+            await using var connection = await GetOpenConnectionAsync();
+            await using var command = await GetCommandAsync(connection,
+                "SELECT telegram_id, latitude, longitude, today_date FROM users_place_coords");
+
+            var dataset = new List<RecordsCoordinatesModel>();
+
+            await using var reader = await command.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                var recordObject = new RecordsCoordinatesModel()
+                {
+                    TelegramId = reader.GetInt64(0),
+                    Latitude = reader.GetString(1),
+                    Longitude = reader.GetString(2),
+                    TodayDate = reader.IsDBNull(3)
+                        ? DateTime.MinValue
+                        : reader.GetDateTime(3)
+                };
+                
+                dataset.Add(recordObject);
+            }
+
+            return dataset;
+        }
+        
+
         public static async Task IncludeLatitudeAndLongitude(long userId, string latitude, string longitude)
         {
             await using var connection = await GetOpenConnectionAsync();
@@ -179,7 +246,7 @@ namespace BirthdayReminder.MySqlDataBase.DataBaseConnector
 
             if (query.Contains("INSERT"))
             {
-                var todayDate = await GetDateTime(latitude, longitude);
+                var todayDate = await GetApiKeyDate(latitude, longitude);
                 command.Parameters.AddWithValue("@today_date", todayDate);
                 Console.WriteLine(todayDate);
             }
@@ -189,7 +256,7 @@ namespace BirthdayReminder.MySqlDataBase.DataBaseConnector
         private static HttpClient GetConfiguredHttpClient()
             => new() { DefaultRequestHeaders = { { "User-Agent", "CSharpApp" } } };
 
-        public static async Task<DateTime> GetDateTime(string? lat, string? lon)
+        public static async Task<DateTime> GetApiKeyDate(string? lat, string? lon)
         {
             var url =
                 $"https://api.timezonedb.com/v2.1/get-time-zone?key=7TVJUMUJ9LMG&format=json&by=position&lat={lat}&lng={lon}";
@@ -198,12 +265,25 @@ namespace BirthdayReminder.MySqlDataBase.DataBaseConnector
             var response = await client.GetStringAsync(url);
             var results = JObject.Parse(response);
 
-            var time = (results["formatted"]?.Value<DateTime>())
+            var dataBaseDate = (results["formatted"]?.Value<DateTime>())
                        ?? throw new Exception("Time is null");
 
-            return time;
+            return dataBaseDate;
         }
 
+        public static async Task SetTodayDate(long userId, DateTime currDate)
+        {
+
+            await using var connection = await GetOpenConnectionAsync();
+            await using var command = await GetCommandAsync(connection,
+                "UPDATE users_place_coords SET today_date = @currDate WHERE telegram_id = @userId");
+
+            command.Parameters.AddWithValue("@userId", userId);
+            command.Parameters.AddWithValue("@currDate", currDate);
+
+            await command.ExecuteNonQueryAsync();
+        }
+        
 
         public static async Task<(string?, string?)> GetLatitudeAndLongitudeFromDatabase(long userId)
         {
